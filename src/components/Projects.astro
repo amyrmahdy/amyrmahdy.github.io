@@ -1,0 +1,26 @@
+---
+const projects = [
+  { name: "Tinybird", href: "https://tinybird.co" },
+  { name: "Mockingbird", href: "https://github.com/tinybirdco/mockingbird" },
+  { name: "SpeedWins", href: "https://speedwins.sh" },
+  {
+    name: "Energy Generation",
+    href: "https://energy-generation.alasdairb.com/",
+  },
+];
+---
+
+<h2>Projects</h2>
+<div class="grid grid-cols-1 gap-4 text-center sm:grid-cols-2">
+  {
+    projects.map((project) => (
+      <a
+        class="project-link border-2 border-slate-800 dark:border-neutral-300 hover:border-sky-500"
+        href={project.href}
+        target="_blank"
+      >
+        {project.name}
+      </a>
+    ))
+  }
+</div>

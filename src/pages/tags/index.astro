@@ -1,0 +1,13 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import TagCloud from "@components/TagCloud.astro";
+const allPosts = await getCollection("blog");
+const tags = [...new Set(allPosts.map((post) => post.data.tags).flat())];
+const pageTitle = "Tags";
+---
+
+<BaseLayout pageTitle={pageTitle}>
+  <h2>Tags</h2>
+  <TagCloud {tags} />
+</BaseLayout>

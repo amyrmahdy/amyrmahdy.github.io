@@ -1,0 +1,18 @@
+---
+type PageLink = {
+  title: string;
+  url: string;
+};
+
+const links: Array<PageLink> = [];
+---
+
+<nav>
+  {
+    links.map((link) => (
+      <a class="ml-2" href={link.url}>
+        {link.title}
+      </a>
+    ))
+  }
+</nav>

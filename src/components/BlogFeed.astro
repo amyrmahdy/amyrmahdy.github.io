@@ -1,0 +1,19 @@
+---
+import { getCollection } from "astro:content";
+import getSortedPosts from "@utils/getSortedPosts";
+
+const posts = await getCollection("blog");
+
+const sortedPosts = getSortedPosts(posts);
+---
+
+<h2>Posts</h2>
+<ul>
+  {
+    sortedPosts.map((post) => (
+      <li>
+        <a href={`/posts/${post.slug}`}>{post.data.title}</a>
+      </li>
+    ))
+  }
+</ul>

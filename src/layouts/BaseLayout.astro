@@ -1,0 +1,29 @@
+---
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import "../styles/global.css";
+const { pageTitle } = Astro.props;
+---
+
+<html
+  lang="en"
+  class="min-h-full bg-gradient-to-br from-slate-200 via-slate-200 to-slate-400 dark:bg-gradient-to-br dark:from-neutral-800 dark:via-neutral-800 dark:to-neutral-900 font-mono"
+>
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐥</text></svg>"
+    />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{pageTitle}</title>
+  </head>
+  <body>
+    <main class="prose prose-l m-auto dark:prose-invert">
+      <Header />
+      <slot />
+      <Footer />
+    </main>
+  </body>
+</html>

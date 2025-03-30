@@ -1,0 +1,21 @@
+{
+  "name": "astro-blog-template",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/rss": "^2.4.3",
+    "@astrojs/tailwind": "^6.0.2",
+    "astro": "^5.5.5",
+    "tailwindcss": "^3.3.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.9"
+  }
+}

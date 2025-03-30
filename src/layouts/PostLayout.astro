@@ -1,0 +1,40 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import TagCloud from "@components/TagCloud.astro";
+
+const { data } = Astro.props;
+---
+
+<BaseLayout pageTitle={data.title}>
+  <h1>{data.title}</h1>
+  <button
+    class="text-sm bg-sky-500 text-black py-2 px-4 rounded-lg"
+    id="share_button"
+    onclick="copy()"
+    >Copy post URL
+    <svg
+      clip-rule="evenodd"
+      fill-rule="evenodd"
+      height="18"
+      width="18"
+      class="inline"
+      stroke-linejoin="round"
+      stroke-miterlimit="2"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+      ><path
+        d="m6 18h-3c-.48 0-1-.379-1-1v-14c0-.481.38-1 1-1h14c.621 0 1 .522 1 1v3h3c.621 0 1 .522 1 1v14c0 .621-.522 1-1 1h-14c-.48 0-1-.379-1-1zm1.5-10.5v13h13v-13zm9-1.5v-2.5h-13v13h2.5v-9.5c0-.481.38-1 1-1z"
+        fill-rule="nonzero"></path></svg
+    >
+  </button>
+  <slot />
+  <h3 class="text-sky-500">Post tags</h3>
+  <TagCloud tags={data.tags} />
+</BaseLayout>
+
+<script>
+  const button = document.querySelector("#share_button");
+  button!.addEventListener("click", () => {
+    navigator.clipboard.writeText(window.location.href);
+  });
+</script>

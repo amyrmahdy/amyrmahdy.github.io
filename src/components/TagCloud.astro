@@ -1,0 +1,13 @@
+---
+const { tags } = Astro.props;
+---
+
+<p>
+  {
+    tags.map((tag: string) => (
+      <a class="tracking-widest no-underline" href={`/tags/${tag}`}>
+        {tag}{" "}
+      </a>
+    ))
+  }
+</p>

@@ -1,0 +1,15 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import BlogFeed from "@components/BlogFeed.astro";
+import Projects from "@components/Projects.astro";
+import About from "@components/About.astro"
+
+const pageTitle = "Welcome";
+---
+
+<BaseLayout pageTitle={pageTitle}>
+  <h1>{pageTitle}</h1>
+  <About />
+  <Projects />
+  <BlogFeed />
+</BaseLayout>
