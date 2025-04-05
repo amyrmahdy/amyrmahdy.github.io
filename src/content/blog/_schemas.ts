@@ -6,7 +6,7 @@ export const blogSchema = z
     title: z.string(),
     tags: z.array(z.string()).default(["others"]),
     categories: z.array(z.string()).default(["others"]),
-    author: z.string().optional().default("Alasdair Brown"),
+    author: z.string().optional().default("amyrmahdy"),
     description: z.string().optional().default("Yes"),
     ogImage: z.string().optional(),
     postSlug: z.string().optional(),
