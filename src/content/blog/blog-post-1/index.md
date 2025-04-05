@@ -23,6 +23,5 @@ Some `inline code`.
 Code block:
 
 ```bash
-git clone https://github.com/sdairs/astro-blog-template.git
-cd astro-blog-template
+pwd
 ```
