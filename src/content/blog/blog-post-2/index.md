@@ -1,5 +1,5 @@
 ---
-title: "Blog post 2"
+title: "Blog post 2 test"
 pubDate: 2023-05-17
 tags:
   - "example1"
@@ -21,6 +21,5 @@ Some `inline code`.
 Code block:
 
 ```bash
-git clone https://github.com/sdairs/astro-blog-template.git
-cd astro-blog-template
+ls -lh
 ```
