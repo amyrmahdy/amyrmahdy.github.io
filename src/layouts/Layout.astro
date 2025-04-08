@@ -1,19 +1,15 @@
----
-import MatomoTracker from '../components/MatomoTracker.astro';
-import Header from '../components/Header.astro';
-
-// Always load in production (or remove condition for testing)
-// const enableMatomo = import.meta.env.PROD;
----
-<html>
-  <head>
-    <!-- Load Matomo FIRST to avoid conflicts -->
-    { <MatomoTracker />}
-    
-    <!-- Other components -->
-    <Header />
-  </head>
-  <body>
-    <slot />
-  </body>
-</html>
+<head>
+  <!-- Hardcoded Matomo (temporary test) -->
+  <script is:inline>
+    console.log("Matomo forced load!");
+    var _paq = window._paq || [];
+    _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
+    var u = "https://mymatomo.darkube.app/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d = document, g = d.createElement('script');
+    g.async = true; g.src = u+'matomo.js';
+    document.head.appendChild(g);
+  </script>
+</head>
