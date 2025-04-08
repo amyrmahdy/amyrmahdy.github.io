@@ -2,15 +2,23 @@
 // src/components/MatomoTracker.astro
 const matomoUrl = import.meta.env.PUBLIC_MATOMO_URL || 'https://mymatomo.darkube.app';
 const siteId = import.meta.env.PUBLIC_MATOMO_SITE_ID || '1';
+
+// Pre-compute URLs to ensure proper interpolation
+const trackerUrl = `${matomoUrl}/matomo.php`;
+const scriptUrl = `${matomoUrl}/matomo.js`;
 ---
 
-<!-- Use client:load to force Astro to include this -->
 <script client:load>
-  console.log('MatomoTracker: Initializing...');
+  console.log('MatomoTracker: Initializing with', {
+    trackerUrl: '${trackerUrl}',
+    scriptUrl: '${scriptUrl}',
+    siteId: '${siteId}'
+  });
+
   window._paq = window._paq || [];
   
   // Configuration
-  _paq.push(['setTrackerUrl', '${matomoUrl}/matomo.php']);
+  _paq.push(['setTrackerUrl', '${trackerUrl}']);
   _paq.push(['setSiteId', '${siteId}']);
   
   // Tracking
@@ -19,10 +27,10 @@ const siteId = import.meta.env.PUBLIC_MATOMO_SITE_ID || '1';
   
   // Script injection
   const script = document.createElement('script');
-  script.src = '${matomoUrl}/matomo.js';
+  script.src = '${scriptUrl}';
   script.async = true;
   script.defer = true;
+  script.onload = () => console.log('Matomo script loaded successfully');
+  script.onerror = (e) => console.error('Matomo script failed to load', e);
   document.head.appendChild(script);
-  
-  console.log('MatomoTracker: Loaded successfully');
 </script>
