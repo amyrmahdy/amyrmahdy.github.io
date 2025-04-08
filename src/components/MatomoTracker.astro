@@ -1,0 +1,21 @@
+---
+// src/components/MatomoTracker.astro
+const matomoUrl = import.meta.env.PUBLIC_MATOMO_URL || 'https://mymatomo.darkube.app';
+const siteId = import.meta.env.PUBLIC_MATOMO_SITE_ID || '1';
+---
+
+<!-- Matomo -->
+<script>
+  var _paq = window._paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u = "${matomoUrl}/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '${siteId}']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Code -->

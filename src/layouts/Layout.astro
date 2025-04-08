@@ -1,0 +1,15 @@
+---
+// src/layouts/Layout.astro
+import MatomoTracker from '../components/MatomoTracker.astro';
+// ... other imports
+---
+
+<html lang="en">
+  <head>
+    <!-- ... other head elements ... -->
+    {import.meta.env.PROD && <MatomoTracker />}
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
