@@ -1,36 +1,23 @@
 ---
-// src/components/MatomoTracker.astro
 const matomoUrl = import.meta.env.PUBLIC_MATOMO_URL || 'https://mymatomo.darkube.app';
 const siteId = import.meta.env.PUBLIC_MATOMO_SITE_ID || '1';
-
-// Pre-compute URLs to ensure proper interpolation
-const trackerUrl = `${matomoUrl}/matomo.php`;
-const scriptUrl = `${matomoUrl}/matomo.js`;
 ---
 
-<script client:load>
-  console.log('MatomoTracker: Initializing with', {
-    trackerUrl: '${trackerUrl}',
-    scriptUrl: '${scriptUrl}',
-    siteId: '${siteId}'
-  });
-
-  window._paq = window._paq || [];
-  
-  // Configuration
-  _paq.push(['setTrackerUrl', '${trackerUrl}']);
-  _paq.push(['setSiteId', '${siteId}']);
-  
-  // Tracking
+<script is:inline>
+  // Directly inject the values - no template literals
+  var _paq = window._paq = window._paq || [];
+  _paq.push(['setTrackerUrl', 'https://mymatomo.darkube.app/matomo.php']);
+  _paq.push(['setSiteId', '1']);
   _paq.push(['trackPageView']);
   _paq.push(['enableLinkTracking']);
   
-  // Script injection
-  const script = document.createElement('script');
-  script.src = '${scriptUrl}';
-  script.async = true;
-  script.defer = true;
-  script.onload = () => console.log('Matomo script loaded successfully');
-  script.onerror = (e) => console.error('Matomo script failed to load', e);
-  document.head.appendChild(script);
+  (function() {
+    var d = document, g = d.createElement('script');
+    g.src = 'https://mymatomo.darkube.app/matomo.js';
+    g.async = true;
+    g.defer = true;
+    g.onload = function() { console.log('Matomo loaded successfully'); };
+    g.onerror = function(e) { console.error('Matomo failed to load', e); };
+    d.head.appendChild(g);
+  })();
 </script>
