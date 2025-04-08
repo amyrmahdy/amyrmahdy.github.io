@@ -3,12 +3,12 @@ import MatomoTracker from '../components/MatomoTracker.astro';
 import Header from '../components/Header.astro';
 
 // Always load in production (or remove condition for testing)
-const enableMatomo = import.meta.env.PROD;
+// const enableMatomo = import.meta.env.PROD;
 ---
 <html>
   <head>
     <!-- Load Matomo FIRST to avoid conflicts -->
-    {enableMatomo && <MatomoTracker />}
+    { <MatomoTracker />}
     
     <!-- Other components -->
     <Header />
