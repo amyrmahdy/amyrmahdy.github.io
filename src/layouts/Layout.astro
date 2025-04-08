@@ -1,13 +1,17 @@
 ---
-// src/layouts/Layout.astro
 import MatomoTracker from '../components/MatomoTracker.astro';
-// ... other imports
----
+import Header from '../components/Header.astro';
 
-<html lang="en">
+// Always load in production (or remove condition for testing)
+const enableMatomo = import.meta.env.PROD;
+---
+<html>
   <head>
-    <!-- ... other head elements ... -->
-    {import.meta.env.PROD && <MatomoTracker />}
+    <!-- Load Matomo FIRST to avoid conflicts -->
+    {enableMatomo && <MatomoTracker />}
+    
+    <!-- Other components -->
+    <Header />
   </head>
   <body>
     <slot />

@@ -1,5 +1,6 @@
 ---
 import Nav from "./Nav.astro";
+const hasMatomo = typeof window._paq !== 'undefined';
 ---
 
 <header class="flex justify-between my-4 border-b-2 border-b-sky-500 pb-2">
@@ -14,3 +15,11 @@ import Nav from "./Nav.astro";
     <Nav />
   </div>
 </header>
+
+<!-- Example: Conditionally run scripts if Matomo isn't loaded -->
+<script is:inline>
+  if (!window._paq) {
+    console.log('No Matomo detected');
+    // Fallback analytics (if needed)
+  }
+</script>

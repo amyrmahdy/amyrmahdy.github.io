@@ -1,21 +1,22 @@
 ---
-// src/components/MatomoTracker.astro
+// Hardcoded fallbacks (override with .env in production)
 const matomoUrl = import.meta.env.PUBLIC_MATOMO_URL || 'https://mymatomo.darkube.app';
 const siteId = import.meta.env.PUBLIC_MATOMO_SITE_ID || '1';
 ---
 
-<!-- Matomo -->
-<script is:inline> 
-  var _paq = window._paq = window._paq || [];
-  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+<!-- Add a data attribute to avoid conflicts -->
+<script is:inline data-matomo-tracker>
+  window._paq = window._paq || [];
   _paq.push(['trackPageView']);
   _paq.push(['enableLinkTracking']);
   (function() {
-    var u = "${matomoUrl}/";
+    var u = `${matomoUrl}/`;
     _paq.push(['setTrackerUrl', u+'matomo.php']);
     _paq.push(['setSiteId', '${siteId}']);
-    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+    var d = document, g = d.createElement('script');
+    g.async = true;
+    g.src = u + 'matomo.js';
+    g.dataset.matomo = 'true'; // Tag the script
+    document.head.appendChild(g);
   })();
 </script>
-<!-- End Matomo Code -->
