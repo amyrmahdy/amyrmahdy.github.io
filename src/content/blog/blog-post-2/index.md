@@ -5,6 +5,7 @@ tags:
   - "example1"
   - "example3"
   - "example6"
+  - "example8"
 description: "Example description."
 ---
 
