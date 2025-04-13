@@ -13,7 +13,7 @@ This post says some cool stuff.
 
 ## Heading 2
 
-**note: bold text**
+**note: bold text example**
 
 A URL [here](/posts/blog-post-2).
 
