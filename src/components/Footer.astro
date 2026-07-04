@@ -1,7 +1,14 @@
 ---
-import Social from "./Social.astro";
+import Social from "@components/Social.astro";
+const year = new Date().getFullYear();
 ---
 
-<footer class="border-t-2 border-t-sky-500 my-4 pt-2">
+<footer
+  class="mt-16 flex flex-col items-center gap-4 border-t py-8 sm:flex-row sm:justify-between"
+  style="border-color: var(--line);"
+>
+  <p class="text-xs tracking-wide text-[var(--muted)]">
+    &copy; {year} Amir Mahdi Madani &middot; Built for speed, designed to compound.
+  </p>
   <Social />
 </footer>

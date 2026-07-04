@@ -1,15 +1,41 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
-import BlogFeed from "@components/BlogFeed.astro";
-import Projects from "@components/Projects.astro";
-import About from "@components/About.astro"
-
-const pageTitle = "Hello, World!";
+import About from "@components/About.astro";
+import Harvest from "@components/Harvest.astro";
+import Writing from "@components/Writing.astro";
 ---
 
-<BaseLayout pageTitle={pageTitle}>
-  <h1>{pageTitle}</h1>
+<BaseLayout>
+  <section class="pt-16 pb-4 sm:pt-24">
+    <p class="eyebrow">// AI Solutions Architect</p>
+
+    <h1 class="mt-5 text-4xl font-semibold leading-[1.05] tracking-tight text-[var(--fg)] sm:text-6xl">
+      Amir Mahdi<br /><span class="glow-text text-[var(--accent)]">Madani</span>
+    </h1>
+
+    <p class="mt-6 max-w-xl text-base leading-relaxed text-[var(--muted)] sm:text-lg">
+      I audit broken corporate processes and completely rewire them with
+      privacy-first AI agentic architectures &mdash; then build the teams that ship
+      them at 10x speed.
+    </p>
+
+    <div class="mt-8 flex flex-wrap items-center gap-3">
+      <a
+        href="#writing"
+        class="rounded-md px-5 py-2.5 text-sm font-medium text-black"
+        style="background: var(--accent); box-shadow: 0 0 24px -4px var(--accent);"
+        >Read the writing</a
+      >
+      <a
+        href="#method"
+        class="rounded-md border px-5 py-2.5 text-sm font-medium text-[var(--fg)] hover:border-[var(--accent)]"
+        style="border-color: var(--line);"
+        >The Harvest Methodology</a
+      >
+    </div>
+  </section>
+
   <About />
-  <Projects />
-  <BlogFeed />
+  <Harvest />
+  <Writing />
 </BaseLayout>

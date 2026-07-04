@@ -1,16 +1,33 @@
 ---
-import Nav from "./Nav.astro";
+const links = [
+  { title: "About", url: "/#about" },
+  { title: "Method", url: "/#method" },
+  { title: "Writing", url: "/#writing" },
+  { title: "Medium", url: "https://amyrmahdy.medium.com" },
+];
 ---
 
-<header class="flex justify-between my-4 border-b-2 border-b-sky-500 pb-2">
-  <div class="text-left">
+<header
+  class="flex items-center justify-between border-b py-5"
+  style="border-color: var(--line);"
+>
+  <a href="/" class="group flex items-center gap-2 no-underline">
     <span
-      ><a href="/" class="tracking-widest no-underline text-xl"
-        >Turning Complex Problems into Simple, Impactful Solutions</a
-      ></span
+      class="inline-block h-2.5 w-2.5 rounded-full"
+      style="background: var(--accent); box-shadow: 0 0 12px var(--accent);"
+    ></span>
+    <span class="text-sm tracking-[0.25em] text-[var(--fg)] group-hover:text-[var(--accent)]"
+      >A. M. MADANI</span
     >
-  </div>
-  <div class="text-right">
-    <Nav />
-  </div>
+  </a>
+
+  <nav class="flex items-center gap-4 sm:gap-6 text-xs sm:text-sm text-[var(--muted)]">
+    {
+      links.map((link) => (
+        <a href={link.url} class="tracking-wide hover:text-[var(--accent)]">
+          {link.title}
+        </a>
+      ))
+    }
+  </nav>
 </header>

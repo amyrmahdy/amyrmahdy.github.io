@@ -1,0 +1,54 @@
+---
+const loop = ["Bet", "Deploy", "Deliver", "Evaluate", "Harvest", "Reuse"];
+
+const pillars = [
+  {
+    title: "Architect First",
+    body: "Structure, interfaces, and system design determine speed, quality, and reuse — before a line ships.",
+  },
+  {
+    title: "Deliver First",
+    body: "Working value fast over endless planning, focusing on the 20% of work that creates 80% of the impact.",
+  },
+  {
+    title: "Harvestable by Design",
+    body: "Every delivery extracts reusable IP — prompts, patterns, assets — into a compounding organizational backbone.",
+  },
+];
+---
+
+<section id="method" class="scroll-mt-24 border-t pt-12" style="border-color: var(--line);">
+  <p class="eyebrow">// Signature Framework</p>
+  <h2 class="mt-4 text-2xl font-semibold text-[var(--fg)] sm:text-3xl">
+    The Harvest Methodology
+  </h2>
+  <p class="mt-4 max-w-2xl text-[15px] leading-relaxed text-[var(--muted)]">
+    An original operating model for AI-native organizations — built on the conviction
+    that AI has changed the rules of work so fundamentally that a new operating system
+    is mandatory, not optional. It turns fast execution into compounding, reusable advantage.
+  </p>
+
+  <div class="mt-8 flex flex-wrap items-center gap-x-2 gap-y-3 text-sm">
+    {
+      loop.map((step, i) => (
+        <>
+          <span class="rounded-md border px-3 py-1.5 text-[var(--fg)]" style="border-color: var(--line); background: var(--accent-soft);">
+            {step}
+          </span>
+          {i < loop.length - 1 && <span class="text-[var(--accent)]">&rarr;</span>}
+        </>
+      ))
+    }
+  </div>
+
+  <div class="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3">
+    {
+      pillars.map((p) => (
+        <div class="card rounded-lg p-5">
+          <h3 class="text-sm font-semibold tracking-wide text-[var(--accent)]">{p.title}</h3>
+          <p class="mt-2 text-[13px] leading-relaxed text-[var(--muted)]">{p.body}</p>
+        </div>
+      ))
+    }
+  </div>
+</section>

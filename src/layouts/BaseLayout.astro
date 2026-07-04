@@ -1,29 +1,49 @@
 ---
-import Header from "../components/Header.astro";
-import Footer from "../components/Footer.astro";
-import MatomoTracker from "../components/MatomoTracker.astro";
+import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
+import MatomoTracker from "@components/MatomoTracker.astro";
 import "../styles/global.css";
-const { pageTitle } = Astro.props;
 
+const {
+  pageTitle = "Amir Mahdi Madani — AI Solutions Architect",
+  description = "Amir Mahdi Madani — AI Solutions Architect. Auditing broken corporate processes and rewiring them with privacy-first AI agentic architectures. Creator of The Harvest Methodology.",
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 
-<html lang="en" class="min-h-full bg-gradient-to-br from-slate-200 via-slate-200 to-slate-400 dark:bg-gradient-to-br dark:from-neutral-800 dark:via-neutral-800 dark:to-neutral-900 font-mono">
+<html lang="en" class="min-h-full font-mono antialiased">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐥</text></svg>" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
 
-    <!-- Load Matomo only in production -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2232%22 fill=%22none%22 stroke=%22%2338bdf8%22 stroke-width=%226%22/><circle cx=%2250%22 cy=%2250%22 r=%229%22 fill=%22%2338bdf8%22/></svg>"
+    />
+
     {import.meta.env.PROD && <MatomoTracker />}
   </head>
 
   <body>
-    <main class="prose prose-l m-auto dark:prose-invert">
+    <div class="mx-auto flex min-h-screen max-w-3xl flex-col px-6 sm:px-8">
       <Header />
-      <slot />
+      <main class="flex-1">
+        <slot />
+      </main>
       <Footer />
-    </main>
+    </div>
   </body>
 </html>

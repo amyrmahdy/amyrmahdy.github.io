@@ -1,0 +1,101 @@
+---
+const MEDIUM = "https://amyrmahdy.medium.com";
+
+const articles = [
+  {
+    title: "The Harvest Method: Turning Engineering into a Capital-Efficient IP Factory",
+    date: "Jun 8, 2026",
+    featured: true,
+    href: "https://amyrmahdy.medium.com/the-harvest-method-turning-engineering-into-a-capital-efficient-ip-factory-c503118e3cad",
+  },
+  {
+    title: "Building a Private Elite Network Like \u201CDialog\u201D",
+    date: "Jun 28, 2026",
+    href: "https://amyrmahdy.medium.com/building-a-private-elite-network-like-dialog-c8a5ccb836e2",
+  },
+  {
+    title: "How to Hire a Forward-Deployed Engineer for the AI-Native Era",
+    date: "Jun 27, 2026",
+    href: "https://amyrmahdy.medium.com/how-to-hire-a-forward-deployed-engineer-for-the-ai-native-era-5445a0b4e11f",
+  },
+  {
+    title: "Deep Dive: Human Resource Evals (Harvestability)",
+    date: "Jun 13, 2026",
+    href: "https://amyrmahdy.medium.com/deep-dive-human-resource-evals-harvestability-e9727f742054",
+  },
+  {
+    title: "Deep Dive: The Harvester Guild",
+    date: "Jun 13, 2026",
+    href: "https://amyrmahdy.medium.com/deep-dive-the-harvester-guild-ca464c4c8af1",
+  },
+  {
+    title: "Deep Dive: Evals-Driven CI/CD",
+    date: "Jun 11, 2026",
+    href: "https://amyrmahdy.medium.com/deep-dive-evals-driven-ci-cd-d4c7db3d8663",
+  },
+  {
+    title: "Deep Dive: Why and How Betting Tables?",
+    date: "Jun 11, 2026",
+    href: "https://amyrmahdy.medium.com/deep-dive-why-and-how-betting-tables-9cc19489007c",
+  },
+  {
+    title: "Deep Dive: Flipping the Workflow (MLP First)",
+    date: "Jun 9, 2026",
+    href: "https://amyrmahdy.medium.com/deep-dive-flipping-the-workflow-mlp-first-4ad8d4a3ed84",
+  },
+  {
+    title: "Deep Dive: Async Comms & Documentation in the AI-Native Org",
+    date: "Jun 9, 2026",
+    href: "https://amyrmahdy.medium.com/deep-dive-async-comms-documentation-in-the-ai-native-org-2f8e84707737",
+  },
+  {
+    title: "Deep Dive: AI Swarm Orchestration",
+    date: "Jun 8, 2026",
+    href: "https://amyrmahdy.medium.com/deep-dive-ai-swarm-orchestration-0d7116436b21",
+  },
+];
+---
+
+<section id="writing" class="scroll-mt-24 border-t pt-12" style="border-color: var(--line);">
+  <div class="flex items-end justify-between gap-4">
+    <div>
+      <p class="eyebrow">// Writing</p>
+      <h2 class="mt-4 text-2xl font-semibold text-[var(--fg)] sm:text-3xl">Field notes & deep dives</h2>
+    </div>
+    <a
+      href={MEDIUM}
+      target="_blank"
+      rel="noopener"
+      class="shrink-0 text-xs text-[var(--muted)] hover:text-[var(--accent)] sm:text-sm"
+      >All on Medium &rarr;</a
+    >
+  </div>
+
+  <ul class="mt-8 flex flex-col" style="border-top: 1px solid var(--line);">
+    {
+      articles.map((article) => (
+        <li style="border-bottom: 1px solid var(--line);">
+          <a
+            href={article.href}
+            target="_blank"
+            rel="noopener"
+            class="group flex items-baseline gap-4 py-4"
+          >
+            <time class="w-24 shrink-0 text-xs tabular-nums text-[var(--muted)]">{article.date}</time>
+            <span class="flex-1 text-[15px] leading-snug text-[var(--fg)] group-hover:text-[var(--accent)]">
+              {article.featured && (
+                <span class="mr-2 align-middle text-[10px] uppercase tracking-widest text-[var(--accent)]">
+                  Flagship
+                </span>
+              )}
+              {article.title}
+            </span>
+            <span class="shrink-0 text-[var(--muted)] transition-transform group-hover:translate-x-1 group-hover:text-[var(--accent)]">
+              &rarr;
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</section>

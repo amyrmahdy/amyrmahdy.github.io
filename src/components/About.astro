@@ -1,6 +1,38 @@
 ---
+const stats = [
+  { value: "$1.5M+", label: "B2B AI contracts delivered" },
+  { value: "10x", label: "operational output compression" },
+  { value: "6+ yrs", label: "shipping production AI" },
+];
 ---
 
-<p>
-Hi, I'm amyrmahdy. I work with data—whether it's building machine learning models, designing efficient data pipelines, or creating tools to help businesses make better decisions. Recently, I developed a chatbot using RAG and vector databases that reduced customer support workload by 30%, and I'm currently exploring time-series forecasting for crypto prices. From data pipelines to deep learning, software engineering to strategic analytics, I embrace every layer of the data universe. My mission? To turn raw data into dynamic solutions that don’t just predict the future—they shape it.
-</p>
+<section id="about" class="scroll-mt-24 border-t pt-12" style="border-color: var(--line);">
+  <p class="eyebrow">// About</p>
+
+  <div class="mt-5 space-y-5 text-[15px] leading-relaxed text-[var(--fg)]/90">
+    <p>
+      A problem solver first, and an AI Solutions Architect second. I work from a
+      simple conviction: businesses don't buy AI models — they buy
+      <span class="text-[var(--accent)]">efficiency, cost reduction, and operational transformation.</span>
+    </p>
+    <p>
+      As a CTO, Forward Deployed Engineer, and AI consultant, I audit broken
+      corporate processes and completely rewire them using advanced, customized,
+      privacy-first AI agentic architectures. Beyond building systems, I build and
+      lead the teams that build them — framing missions, setting standards, and
+      orchestrating cross-functional pods to deliver <span class="text-[var(--accent)]">10x output in
+      hypersonic-speed environments.</span>
+    </p>
+  </div>
+
+  <div class="mt-10 grid grid-cols-1 gap-px overflow-hidden rounded-lg sm:grid-cols-3" style="background: var(--line);">
+    {
+      stats.map((stat) => (
+        <div class="bg-[var(--bg)] px-5 py-6">
+          <div class="text-2xl font-semibold text-[var(--accent)] glow-text">{stat.value}</div>
+          <div class="mt-1 text-xs uppercase tracking-wider text-[var(--muted)]">{stat.label}</div>
+        </div>
+      ))
+    }
+  </div>
+</section>
