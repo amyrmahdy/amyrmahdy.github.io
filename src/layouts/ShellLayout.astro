@@ -1,0 +1,41 @@
+---
+/**
+ * Satellite pages — /proof, /book, /writing, /dossier, /privacy, 404.
+ * Same design system, no depth rail and no narrative scroll: these pages are
+ * meant to be landed on directly, forwarded, and read once.
+ */
+import Head from "@components/Head.astro";
+import "@styles/global.css";
+
+interface Props {
+  pageTitle?: string;
+  description?: string;
+  ogType?: string;
+  ogImage?: string;
+  noindex?: boolean;
+}
+
+const {
+  pageTitle = "Amir Mahdi Madani — AI Solutions Architect",
+  description = "Privacy-first AI architecture for European enterprise. Creator of The Harvest Methodology.",
+  ...rest
+} = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <Head pageTitle={pageTitle} description={description} {...rest} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+  </body>
+</html>
+
+<style is:global>
+  main:focus {
+    outline: none;
+  }
+</style>

@@ -1,0 +1,73 @@
+[
+  {
+    "id": "harvest-method-ip-factory",
+    "title": "The Harvest Method: Turning Engineering into a Capital-Efficient IP Factory",
+    "date": "2026-06-08",
+    "url": "https://amyrmahdy.medium.com/the-harvest-method-turning-engineering-into-a-capital-efficient-ip-factory-c503118e3cad",
+    "flagship": true,
+    "topic": "methodology"
+  },
+  {
+    "id": "private-elite-network-dialog",
+    "title": "Building a Private Elite Network Like “Dialog”",
+    "date": "2026-06-28",
+    "url": "https://amyrmahdy.medium.com/building-a-private-elite-network-like-dialog-c8a5ccb836e2",
+    "topic": "org-design"
+  },
+  {
+    "id": "hire-forward-deployed-engineer",
+    "title": "How to Hire a Forward-Deployed Engineer for the AI-Native Era",
+    "date": "2026-06-27",
+    "url": "https://amyrmahdy.medium.com/how-to-hire-a-forward-deployed-engineer-for-the-ai-native-era-5445a0b4e11f",
+    "topic": "hiring"
+  },
+  {
+    "id": "human-resource-evals",
+    "title": "Deep Dive: Human Resource Evals (Harvestability)",
+    "date": "2026-06-13",
+    "url": "https://amyrmahdy.medium.com/deep-dive-human-resource-evals-harvestability-e9727f742054",
+    "topic": "evals"
+  },
+  {
+    "id": "harvester-guild",
+    "title": "Deep Dive: The Harvester Guild",
+    "date": "2026-06-13",
+    "url": "https://amyrmahdy.medium.com/deep-dive-the-harvester-guild-ca464c4c8af1",
+    "topic": "org-design"
+  },
+  {
+    "id": "evals-driven-ci-cd",
+    "title": "Deep Dive: Evals-Driven CI/CD",
+    "date": "2026-06-11",
+    "url": "https://amyrmahdy.medium.com/deep-dive-evals-driven-ci-cd-d4c7db3d8663",
+    "topic": "evals"
+  },
+  {
+    "id": "betting-tables",
+    "title": "Deep Dive: Why and How Betting Tables?",
+    "date": "2026-06-11",
+    "url": "https://amyrmahdy.medium.com/deep-dive-why-and-how-betting-tables-9cc19489007c",
+    "topic": "methodology"
+  },
+  {
+    "id": "flipping-the-workflow-mlp-first",
+    "title": "Deep Dive: Flipping the Workflow (MLP First)",
+    "date": "2026-06-09",
+    "url": "https://amyrmahdy.medium.com/deep-dive-flipping-the-workflow-mlp-first-4ad8d4a3ed84",
+    "topic": "methodology"
+  },
+  {
+    "id": "async-comms-documentation",
+    "title": "Deep Dive: Async Comms & Documentation in the AI-Native Org",
+    "date": "2026-06-09",
+    "url": "https://amyrmahdy.medium.com/deep-dive-async-comms-documentation-in-the-ai-native-org-2f8e84707737",
+    "topic": "org-design"
+  },
+  {
+    "id": "ai-swarm-orchestration",
+    "title": "Deep Dive: AI Swarm Orchestration",
+    "date": "2026-06-08",
+    "url": "https://amyrmahdy.medium.com/deep-dive-ai-swarm-orchestration-0d7116436b21",
+    "topic": "agents"
+  }
+]

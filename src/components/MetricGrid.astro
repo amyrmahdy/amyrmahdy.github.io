@@ -1,0 +1,100 @@
+---
+/**
+ * Numbers, set in mono with tabular figures. "$1.5M delivered" is a claim;
+ * a number with a method note beside it is proof, and proof gets forwarded.
+ */
+interface Metric {
+  value: string;
+  label: string;
+  direction?: "up" | "down" | "flat";
+}
+
+interface Props {
+  metrics: Metric[];
+  method?: string;
+  compact?: boolean;
+}
+
+const { metrics, method, compact = false } = Astro.props;
+const glyph = { up: "↑", down: "↓", flat: "→" };
+---
+
+<div class:list={["metrics", compact && "compact"]}>
+  {
+    metrics.map((m) => (
+      <div class="metric">
+        <div class="metric-value mono">
+          {m.value}
+          <span class="metric-dir" aria-hidden="true">
+            {glyph[m.direction ?? "up"]}
+          </span>
+        </div>
+        <div class="metric-label">{m.label}</div>
+      </div>
+    ))
+  }
+</div>
+
+{
+  method && (
+    <p class="method">
+      <span class="method-key mono">METHOD</span>
+      {method}
+    </p>
+  )
+}
+
+<style>
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    margin-block: 2rem;
+  }
+  .metric {
+    background: var(--bg);
+    padding: 1.5rem 1.25rem;
+  }
+  .compact .metric {
+    padding: 1rem;
+  }
+
+  .metric-value {
+    font-size: var(--t-h3);
+    font-weight: 500;
+    color: var(--accent);
+    line-height: 1.1;
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+  }
+  .metric-dir {
+    font-size: 0.6em;
+    opacity: 0.5;
+  }
+
+  .metric-label {
+    margin-top: 0.6rem;
+    font-size: var(--t-small);
+    color: var(--muted);
+    line-height: 1.45;
+  }
+
+  /* A number without a method note is marketing. */
+  .method {
+    font-size: var(--t-small);
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 68ch;
+  }
+  .method-key {
+    display: inline-block;
+    margin-right: 0.6rem;
+    font-size: var(--t-micro);
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    opacity: 0.75;
+  }
+</style>

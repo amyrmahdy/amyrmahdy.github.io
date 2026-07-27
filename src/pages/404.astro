@@ -1,19 +1,39 @@
 ---
-import BaseLayout from "@layouts/BaseLayout.astro";
+/**
+ * Most kimberlite pipes come up empty — the geology carries the joke, so the
+ * 404 stays in voice without straining for one.
+ */
+import ShellLayout from "@layouts/ShellLayout.astro";
 ---
 
-<BaseLayout pageTitle="404 — Amir Mahdi Madani">
-  <section class="flex flex-col items-start justify-center py-32">
-    <p class="eyebrow">// 404</p>
-    <h1 class="mt-5 text-5xl font-semibold text-[var(--accent)] glow-text sm:text-7xl">Signal lost</h1>
-    <p class="mt-5 max-w-md text-[var(--muted)]">
-      This route never made it past the betting table. Let's get you back to solid ground.
+<ShellLayout
+  pageTitle="404 — No sample at this depth"
+  description="This route came up empty."
+>
+  <section class="chapter">
+    <p class="eyebrow">// 404 &middot; NO SAMPLE AT THIS DEPTH</p>
+    <h1 class="chapter-title">Barren pipe.</h1>
+    <p class="lead">
+      Most kimberlite pipes come up empty. This one has nothing in it &mdash;
+      everything worth having is back at the surface.
     </p>
-    <a
-      href="/"
-      class="mt-8 rounded-md px-5 py-2.5 text-sm font-medium text-black"
-      style="background: var(--accent); box-shadow: 0 0 24px -4px var(--accent);"
-      >Return home</a
-    >
+    <p class="cta-row">
+      <a class="cta" href="/">Return to 0 km &rarr;</a>
+    </p>
   </section>
-</BaseLayout>
+</ShellLayout>
+
+<style>
+  .chapter { min-height: 70svh; align-content: center; }
+  .chapter-title { margin-block: 1.25rem 1.5rem; }
+  .cta-row { margin-top: 2.5rem; }
+  .cta {
+    font-family: var(--font-mono);
+    font-size: var(--t-small);
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    border-bottom: 1px solid color-mix(in oklab, var(--accent) 40%, transparent);
+    padding-bottom: 0.35rem;
+  }
+  .cta:hover { border-color: var(--accent); }
+</style>
