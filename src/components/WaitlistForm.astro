@@ -1,0 +1,203 @@
+---
+/**
+ * Two captures on the whole site, and this is both of them. No modal, no
+ * exit-intent, no sticky bar — an exit-intent popup is the precise opposite of
+ * expensive and would undo eight chapters in a quarter of a second.
+ */
+interface Props {
+  placement: "lattice" | "book";
+  eyebrow?: string;
+  heading?: string;
+  blurb?: string;
+  label?: string;
+  button: string;
+}
+
+const {
+  placement,
+  eyebrow,
+  heading,
+  blurb,
+  label = "Work email",
+  button,
+} = Astro.props;
+
+const id = `wl-${placement}`;
+---
+
+<div class="waitlist" data-waitlist data-placement={placement}>
+  {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+  {heading && <h3 class="wl-heading">{heading}</h3>}
+  {blurb && <p class="wl-blurb">{blurb}</p>}
+
+  <form class="wl-form" novalidate data-form>
+    <div class="wl-row">
+      <label class="sr-only" for={id}>{label}</label>
+      <input
+        type="email"
+        id={id}
+        name="email"
+        required
+        autocomplete="email"
+        placeholder={label}
+        aria-describedby={`${id}-status`}
+        data-email
+      />
+      <button type="submit" data-submit>{button}</button>
+    </div>
+
+    <!-- Off-screen rather than display:none — some bots skip hidden fields. -->
+    <div class="wl-trap" aria-hidden="true">
+      <label for={`${id}-company`}>Company</label>
+      <input
+        id={`${id}-company`}
+        name="company"
+        type="text"
+        tabindex="-1"
+        autocomplete="off"
+        data-honeypot
+      />
+    </div>
+
+    <p class="wl-consent">
+      Stored in the EU. Never sold, never enriched, never fed to a model.
+      One click to leave.
+    </p>
+
+    <p class="wl-status" id={`${id}-status`} role="status" aria-live="polite" data-status></p>
+  </form>
+</div>
+
+<style>
+  .waitlist { margin-block: 2.5rem 0; }
+  .wl-heading { font-size: var(--t-h3); margin-block: 0.75rem 0.6rem; }
+  .wl-blurb {
+    color: var(--muted);
+    max-width: 56ch;
+    font-size: var(--t-small);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .wl-row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+
+  input[type="email"] {
+    flex: 1 1 18rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    color: var(--fg);
+    font-family: var(--font-mono);
+    font-size: var(--t-small);
+    padding: 0.85rem 1rem;
+    transition: border-color var(--dur-quick) var(--ease-facet);
+  }
+  input[type="email"]::placeholder { color: var(--muted); opacity: 0.7; }
+  input[type="email"]:focus { outline: none; border-color: var(--accent); }
+  input[aria-invalid="true"] { border-color: var(--fire-red); }
+
+  button {
+    /* Width is reserved so the label swap during submit cannot shift layout. */
+    min-width: 13rem;
+    background: var(--accent);
+    color: var(--bg);
+    border: 1px solid var(--accent);
+    font-family: var(--font-mono);
+    font-size: var(--t-small);
+    letter-spacing: 0.06em;
+    padding: 0.85rem 1.5rem;
+    cursor: pointer;
+    transition: opacity var(--dur-quick) var(--ease-facet);
+  }
+  button:hover { opacity: 0.88; }
+  button[disabled] { opacity: 0.5; cursor: default; }
+
+  .wl-trap {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .wl-consent {
+    margin-top: 0.9rem;
+    font-family: var(--font-mono);
+    font-size: var(--t-micro);
+    line-height: 1.7;
+    color: var(--muted);
+    max-width: 52ch;
+  }
+
+  .wl-status {
+    margin-top: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: var(--t-micro);
+    line-height: 1.7;
+    min-height: 1.7em;
+  }
+  .wl-status[data-tone="ok"] { color: var(--accent); }
+  .wl-status[data-tone="err"] { color: var(--fire-red); }
+
+  [data-done="true"] .wl-row,
+  [data-done="true"] .wl-consent { display: none; }
+</style>
+
+<script>
+  import { subscribe, type SubscribeReason } from "@lib/subscribe";
+
+  const MESSAGES: Record<SubscribeReason, string> = {
+    invalid: "That address didn't look right. Try again?",
+    spam: "",
+    network: "Couldn't reach the server. Check your connection and retry.",
+    server: "Something went wrong on our side. Try again in a moment.",
+    unconfigured: "Signup isn't wired up yet — email amyrmahdy1@gmail.com.",
+  };
+
+  document.querySelectorAll<HTMLElement>("[data-waitlist]").forEach((root) => {
+    const form = root.querySelector<HTMLFormElement>("[data-form]")!;
+    const email = root.querySelector<HTMLInputElement>("[data-email]")!;
+    const honeypot = root.querySelector<HTMLInputElement>("[data-honeypot]")!;
+    const button = root.querySelector<HTMLButtonElement>("[data-submit]")!;
+    const status = root.querySelector<HTMLElement>("[data-status]")!;
+    const placement = root.dataset.placement ?? "unknown";
+    const renderedAt = Date.now();
+    const originalLabel = button.textContent ?? "";
+
+    const say = (text: string, tone: "ok" | "err" | "") => {
+      status.textContent = text;
+      if (tone) status.dataset.tone = tone;
+      else delete status.dataset.tone;
+    };
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      button.disabled = true;
+      button.textContent = "Sending…";
+      email.removeAttribute("aria-invalid");
+      say("", "");
+
+      const result = await subscribe(email.value, {
+        honeypot: honeypot.value,
+        renderedAt,
+        placement,
+      });
+
+      // A caught bot is shown the success state. Never tell it it was caught.
+      if (result.ok || result.reason === "spam") {
+        root.dataset.done = "true";
+        say(
+          "Check your inbox — there's a confirmation email. You're not on the list until you click it.",
+          "ok"
+        );
+        return;
+      }
+
+      button.disabled = false;
+      button.textContent = originalLabel;
+      if (result.reason === "invalid") email.setAttribute("aria-invalid", "true");
+      say(MESSAGES[result.reason], "err");
+      // The typed address stays in the field: retry should not be punished.
+    });
+  });
+</script>
