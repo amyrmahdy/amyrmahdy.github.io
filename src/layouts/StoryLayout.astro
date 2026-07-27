@@ -1,0 +1,54 @@
+---
+/**
+ * The narrative shell. Unlike ShellLayout it imposes no reading column — each
+ * chapter owns its own grid, so a section can bleed full-width for geometry
+ * while its prose stays at 704px.
+ */
+import Head from "@components/Head.astro";
+import DepthRail from "@components/story/DepthRail.astro";
+import "@styles/global.css";
+
+interface Props {
+  pageTitle?: string;
+  description?: string;
+}
+
+const {
+  pageTitle = "Amir Mahdi Madani — AI Solutions Architect",
+  description = "Privacy-first AI architecture for European enterprise. Creator of The Harvest Methodology.",
+} = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <Head pageTitle={pageTitle} description={description} />
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <DepthRail />
+
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+
+    <script>
+      import { initDepth } from "@scripts/depth";
+      initDepth();
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  /* The rail occupies the left edge on wide screens; give the narrative room
+     so a chapter title never collides with the telemetry. */
+  @media (min-width: 1200px) {
+    main {
+      padding-left: var(--rail);
+    }
+  }
+  main:focus {
+    outline: none;
+  }
+</style>

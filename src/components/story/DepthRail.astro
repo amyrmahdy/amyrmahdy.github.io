@@ -1,0 +1,139 @@
+---
+/**
+ * Fixed left rail carrying live depth telemetry. It is the most decorated
+ * element on the site and also the most functional — it is navigation, a
+ * progress affordance, and the "skip to the evidence" escape hatch. That is the
+ * answer to the spectacle objection: nothing here is ornament.
+ *
+ * >=1200px only. Below that it collapses to a top progress line plus a sticky
+ * readout pill, so it never covers content on a phone.
+ */
+import { CHAPTERS, MAX_KM } from "@lib/chapters";
+---
+
+<nav class="rail" data-rail aria-label="Chapter navigation">
+  <ol class="rail-list">
+    {
+      CHAPTERS.map((c) => (
+        <li data-rail-item={c.n} data-active={c.n === 1}>
+          <a href={`#${c.id}`}>
+            <span class="rail-n">{String(c.n).padStart(2, "0")}</span>
+            <span class="rail-tick" aria-hidden="true" />
+            <span class="rail-km">
+              {c.km[0] === c.km[1] ? c.km[0] : `${c.km[0]}–${c.km[1]}`}
+            </span>
+            <span class="sr-only">{c.title}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+
+  <div class="rail-readout" aria-hidden="true">
+    <div><span class="rail-key">D</span><span data-readout="km">0</span> km</div>
+    <div><span class="rail-key">T</span><span data-readout="temp">20</span> &deg;C</div>
+    <div><span class="rail-key">P</span><span data-readout="press">1 atm</span></div>
+  </div>
+
+  <a class="rail-skip" href="#cut">Skip to the evidence &rarr;</a>
+
+  <!-- Announces chapter titles only. A live region reading a depth counter on
+       every scroll frame would be unusable with a screen reader. -->
+  <p class="sr-only" role="status" aria-live="polite" data-rail-announce></p>
+</nav>
+
+<div class="rail-progress" data-rail-fill aria-hidden="true"></div>
+
+<style>
+  .rail {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 20;
+    width: var(--rail);
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.75rem;
+    padding-inline: 1rem;
+    font-family: var(--font-mono);
+    font-size: var(--t-micro);
+    font-variant-numeric: tabular-nums;
+    pointer-events: none;
+  }
+  .rail > * { pointer-events: auto; }
+
+  @media (min-width: 1200px) {
+    .rail { display: flex; }
+  }
+
+  .rail-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.55rem; }
+
+  .rail-list a {
+    display: grid;
+    grid-template-columns: 1.4rem 1.6rem auto;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--muted);
+    opacity: 0.55;
+    transition:
+      opacity var(--dur-quick) var(--ease-facet),
+      color var(--dur-quick) var(--ease-facet);
+  }
+  .rail-list a:hover { opacity: 1; color: var(--fg); }
+
+  [data-active="true"] a { opacity: 1; color: var(--accent); }
+
+  .rail-tick {
+    height: 1px;
+    background: currentColor;
+    transition: transform var(--dur-quick) var(--ease-facet);
+    transform: scaleX(0.6);
+    transform-origin: left;
+  }
+  [data-active="true"] .rail-tick { transform: scaleX(1); }
+
+  .rail-km { font-size: 0.62rem; letter-spacing: 0.04em; }
+
+  .rail-readout {
+    display: grid;
+    gap: 0.3rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+  .rail-key {
+    display: inline-block;
+    width: 1.1rem;
+    color: var(--accent);
+    opacity: 0.7;
+  }
+
+  .rail-skip {
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    line-height: 1.4;
+    text-transform: uppercase;
+    font-size: 0.6rem;
+    border-top: 1px solid var(--line);
+    padding-top: 1rem;
+  }
+  .rail-skip:hover { color: var(--accent); }
+
+  /* Below 1200px: a 2px progress line at the top edge. */
+  .rail-progress {
+    position: fixed;
+    inset: 0 0 auto 0;
+    height: 2px;
+    z-index: 30;
+    background: var(--accent);
+    transform-origin: left;
+    transform: scaleX(var(--fill, 0));
+    opacity: 0.8;
+  }
+  @media (min-width: 1200px) {
+    .rail-progress { display: none; }
+  }
+</style>

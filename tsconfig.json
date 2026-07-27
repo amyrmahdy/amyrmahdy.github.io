@@ -8,7 +8,9 @@
       "@components/*": ["components/*"],
       "@content/*": ["content/*"],
       "@layouts/*": ["layouts/*"],
+      "@lib/*": ["lib/*"],
       "@pages/*": ["pages/*"],
+      "@scripts/*": ["scripts/*"],
       "@styles/*": ["styles/*"],
       "@utils/*": ["utils/*"]
     }

@@ -1,0 +1,87 @@
+---
+/**
+ * One chapter of the descent. Carries its own telemetry as data attributes so
+ * the depth script can interpolate without a second source of truth.
+ *
+ * Every chapter must carry a hard number in the wide column and close on a
+ * sentence about the reader's organisation. A chapter with no artifact is
+ * decoration and gets cut.
+ */
+import type { Chapter } from "@lib/chapters";
+
+interface Props {
+  chapter: Chapter;
+  /** Screen-reader description of the accompanying visual. */
+  visual?: string;
+}
+
+const { chapter: c, visual } = Astro.props;
+const depthLabel = c.km[0] === c.km[1] ? `${c.km[0]} km` : `${c.km[0]}–${c.km[1]} km`;
+const tempLabel =
+  c.celsius[0] === c.celsius[1]
+    ? `${c.celsius[0].toLocaleString("en-GB")} °C`
+    : `${c.celsius[0].toLocaleString("en-GB")}–${c.celsius[1].toLocaleString("en-GB")} °C`;
+---
+
+<section
+  class="chapter"
+  id={c.id}
+  data-chapter={c.n}
+  data-title={c.title}
+  data-stage={c.stage}
+  data-km={JSON.stringify(c.km)}
+  data-celsius={JSON.stringify(c.celsius)}
+  data-pressure={c.pressure}
+  tabindex="-1"
+  aria-labelledby={`${c.id}-title`}
+>
+  <p class="eyebrow">// {String(c.n).padStart(2, "0")} · {c.kicker}</p>
+
+  <dl class="telemetry chapter-telemetry">
+    <div><dt>Depth</dt><dd>{depthLabel}</dd></div>
+    <div><dt>Temp</dt><dd>{tempLabel}</dd></div>
+    <div><dt>Pressure</dt><dd>{c.pressure}</dd></div>
+  </dl>
+
+  <h2 class="chapter-title" id={`${c.id}-title`}>{c.title}</h2>
+
+  {visual && <p class="sr-only">Illustration: {visual}</p>}
+
+  <slot />
+</section>
+
+<style>
+  .chapter { scroll-margin-top: 2rem; }
+  .chapter:focus { outline: none; }
+
+  .chapter-telemetry {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-block: 1rem 1.75rem;
+    padding-block: 0.6rem;
+    border-block: 1px solid var(--line);
+  }
+  .chapter-telemetry div { display: flex; gap: 0.5rem; }
+  .chapter-telemetry dt { opacity: 0.55; text-transform: uppercase; letter-spacing: 0.14em; }
+  .chapter-telemetry dd { margin: 0; color: var(--accent); }
+
+  .chapter-title { margin-block: 0 1.5rem; }
+
+  /* Chapter content rhythm. Slotted children are plain prose by default. */
+  .chapter :global(p) { margin-block: 0 1.15em; max-width: 68ch; }
+  .chapter :global(p:last-child) { margin-bottom: 0; }
+  .chapter :global(strong) { font-weight: 600; color: var(--fg); }
+  .chapter :global(em) { font-style: italic; }
+
+  /* The closing line about the reader's organisation, not about him. */
+  .chapter :global(.payload) {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-size: var(--t-lead);
+    line-height: var(--lh-lead);
+    color: var(--fg);
+    max-width: 60ch;
+  }
+</style>

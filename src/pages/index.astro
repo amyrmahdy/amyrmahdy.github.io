@@ -1,41 +1,91 @@
 ---
-import BaseLayout from "@layouts/BaseLayout.astro";
-import About from "@components/About.astro";
-import Harvest from "@components/Harvest.astro";
-import Writing from "@components/Writing.astro";
+import StoryLayout from "@layouts/StoryLayout.astro";
+import Chapter from "@components/story/Chapter.astro";
+import { CHAPTERS, byId } from "@lib/chapters";
 ---
 
-<BaseLayout>
-  <section class="pt-16 pb-4 sm:pt-24">
-    <p class="eyebrow">// AI Solutions Architect</p>
-
-    <h1 class="mt-5 text-4xl font-semibold leading-[1.05] tracking-tight text-[var(--fg)] sm:text-6xl">
-      Amir Mahdi<br /><span class="glow-text text-[var(--accent)]">Madani</span>
-    </h1>
-
-    <p class="mt-6 max-w-xl text-base leading-relaxed text-[var(--muted)] sm:text-lg">
-      I audit broken corporate processes and completely rewire them with
-      privacy-first AI agentic architectures &mdash; then build the teams that ship
-      them at 10x speed.
+<StoryLayout>
+  <!-- ══ 1 · PREP ═══════════════════════════════════════════════════════════
+       The anti-arrogance inoculation, and it must come first. "I am made of the
+       same material as everyone else" is the most disarming opening a man with
+       this CV can use. -->
+  <Chapter
+    chapter={byId("prep")}
+    visual="A single point of specular light above a flat graphite sheet in wireframe, its layers slipping past one another."
+  >
+    <p class="mono ident">
+      A. M. MADANI &middot; AI SOLUTIONS ARCHITECT<br />
+      CTO, SMARTWAY SOLUTIONS &middot; GERMANY &middot; EU
     </p>
 
-    <div class="mt-8 flex flex-wrap items-center gap-3">
-      <a
-        href="#writing"
-        class="rounded-md px-5 py-2.5 text-sm font-medium text-black"
-        style="background: var(--accent); box-shadow: 0 0 24px -4px var(--accent);"
-        >Read the writing</a
-      >
-      <a
-        href="#method"
-        class="rounded-md border px-5 py-2.5 text-sm font-medium text-[var(--fg)] hover:border-[var(--accent)]"
-        style="border-color: var(--line);"
-        >The Harvest Methodology</a
-      >
-    </div>
-  </section>
+    <p class="lead">
+      Graphite and diamond are the same element, atom for atom. One is worth
+      nothing.
+    </p>
 
-  <About />
-  <Harvest />
-  <Writing />
-</BaseLayout>
+    <p>
+      The difference is how deep it went, how hard it was pressed, and how fast
+      it got out.
+    </p>
+
+    <p>
+      I build privacy-first AI systems for European enterprises. This page is
+      the process, not the r&eacute;sum&eacute;.
+    </p>
+
+    <p class="cta-row">
+      <a href="#crust" class="cta">Begin the descent &darr;</a>
+      <a href="#cut" class="cta cta-quiet">Skip to the evidence &rarr;</a>
+    </p>
+  </Chapter>
+
+  {
+    CHAPTERS.filter((c) => c.n > 1).map((c) => (
+      <Chapter chapter={c}>
+        <p>
+          Placeholder body for chapter {c.n}. Real copy lands with the content
+          collections.
+        </p>
+        <p class="payload">
+          Closing line about the reader's organisation, not about him.
+        </p>
+      </Chapter>
+    ))
+  }
+</StoryLayout>
+
+<style>
+  .ident {
+    font-size: var(--t-micro);
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    line-height: 2;
+    margin-bottom: 2.5rem;
+  }
+
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.75rem;
+    margin-top: 2.5rem;
+  }
+  .cta {
+    font-family: var(--font-mono);
+    font-size: var(--t-small);
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    border-bottom: 1px solid color-mix(in oklab, var(--accent) 40%, transparent);
+    padding-bottom: 0.35rem;
+    transition: border-color var(--dur-quick) var(--ease-facet);
+  }
+  .cta:hover {
+    border-color: var(--accent);
+  }
+  .cta-quiet {
+    color: var(--muted);
+    border-bottom-color: var(--line);
+  }
+  .cta-quiet:hover {
+    color: var(--fg);
+  }
+</style>
