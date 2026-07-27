@@ -1,0 +1,122 @@
+---
+import { getCollection } from "astro:content";
+import ShellLayout from "@layouts/ShellLayout.astro";
+
+const proof = (await getCollection("proof")).sort(
+  (a, b) => a.data.order - b.data.order
+);
+---
+
+<ShellLayout
+  pageTitle="Proof — A. M. Madani"
+  description="Named systems, real numbers, and how each was measured. Nine deliveries across enterprise AI architecture, evals, orchestration and data engineering."
+>
+  <section class="chapter">
+    <p class="eyebrow">// PROOF</p>
+    <h1 class="chapter-title">The cut decides, not the carat.</h1>
+    <p class="lead">
+      Two stones of identical mass differ in value by an order of magnitude,
+      because light only returns if the geometry is right. Same models, same
+      data, same headcount &mdash; the architecture decides whether anything
+      comes back out.
+    </p>
+    <p>
+      Every row below is a named system with a number and a note on how the
+      number was measured. Each has its own URL, so any single one can be sent
+      on its own.
+    </p>
+
+    <ol class="proof-list wide">
+      {
+        proof.map((p) => (
+          <li>
+            <a href={`/proof/${p.id}/`}>
+              <div class="proof-head">
+                <span class="mono proof-org">
+                  {p.data.codename ? `${p.data.codename} · ` : ""}
+                  {p.data.org} · {p.data.period}
+                </span>
+                <span class="mono proof-arrow" aria-hidden="true">
+                  &rarr;
+                </span>
+              </div>
+              <h2 class="proof-title">{p.data.title}</h2>
+              <p class="proof-summary">{p.data.summary}</p>
+              <ul class="proof-metrics mono">
+                {p.data.metrics.map((m) => (
+                  <li>
+                    <strong>{m.value}</strong> {m.label}
+                  </li>
+                ))}
+              </ul>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+
+    <p class="back mono">
+      <a href="/">&larr; Back to the descent</a>
+      &nbsp;&middot;&nbsp;
+      <a href="/dossier/">The whole argument on one page</a>
+    </p>
+  </section>
+</ShellLayout>
+
+<style>
+  .chapter-title { margin-block: 1.25rem 1.5rem; }
+
+  .proof-list {
+    list-style: none;
+    margin: 3rem 0 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+  .proof-list > li { border-bottom: 1px solid var(--line); }
+  .proof-list a {
+    display: block;
+    padding-block: 2rem;
+    transition: background-color var(--dur-quick) var(--ease-facet);
+  }
+  .proof-list a:hover { background: var(--surface); color: inherit; }
+
+  .proof-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: var(--t-micro);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .proof-list a:hover .proof-arrow { color: var(--accent); }
+
+  .proof-title {
+    font-size: var(--t-h3);
+    margin-block: 0.85rem 0.6rem;
+    max-width: 32ch;
+  }
+  .proof-summary {
+    color: var(--muted);
+    font-size: var(--t-small);
+    line-height: 1.6;
+    max-width: 68ch;
+    margin: 0;
+  }
+
+  .proof-metrics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    list-style: none;
+    margin: 1.1rem 0 0;
+    padding: 0;
+    font-size: var(--t-micro);
+    color: var(--muted);
+  }
+  .proof-metrics strong { color: var(--accent); font-weight: 500; }
+
+  .back { margin-top: 3rem; font-size: var(--t-small); color: var(--muted); }
+  .back a { border-bottom: 1px solid var(--line); }
+  .back a:hover { border-color: var(--accent); }
+</style>

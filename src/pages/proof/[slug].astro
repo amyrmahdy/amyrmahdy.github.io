@@ -1,0 +1,100 @@
+---
+import { getCollection, render } from "astro:content";
+import ShellLayout from "@layouts/ShellLayout.astro";
+import MetricGrid from "@components/MetricGrid.astro";
+
+export async function getStaticPaths() {
+  const proof = await getCollection("proof");
+  return proof.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+---
+
+<ShellLayout
+  pageTitle={`${d.codename ?? d.title} — Proof — A. M. Madani`}
+  description={d.summary}
+  ogType="article"
+>
+  <article class="chapter">
+    <p class="eyebrow">
+      // PROOF{d.codename ? ` · ${d.codename.toUpperCase()}` : ""}
+    </p>
+
+    <dl class="telemetry meta">
+      <div><dt>Org</dt><dd>{d.org}</dd></div>
+      <div><dt>Role</dt><dd>{d.role}</dd></div>
+      <div><dt>Period</dt><dd>{d.period}</dd></div>
+      <div><dt>Principle</dt><dd>{d.principle}</dd></div>
+    </dl>
+
+    <h1 class="chapter-title">{d.title}</h1>
+    <p class="lead">{d.summary}</p>
+
+    <div class="wide">
+      <MetricGrid metrics={d.metrics} method={d.method} />
+    </div>
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    {
+      d.stack.length > 0 && (
+        <p class="stack mono">
+          {d.stack.map((s) => (
+            <span>{s}</span>
+          ))}
+        </p>
+      )
+    }
+
+    <p class="back mono">
+      <a href="/proof/">&larr; All proof</a>
+      &nbsp;&middot;&nbsp;
+      <a href="/">Back to the descent</a>
+    </p>
+  </article>
+</ShellLayout>
+
+<style>
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-block: 1rem 1.75rem;
+    padding-block: 0.6rem;
+    border-block: 1px solid var(--line);
+  }
+  .meta div { display: flex; gap: 0.5rem; }
+  .meta dt { opacity: 0.55; text-transform: uppercase; letter-spacing: 0.14em; }
+  .meta dd { margin: 0; color: var(--accent); }
+
+  .chapter-title { margin-block: 0 1.5rem; }
+
+  .prose :global(p) { margin-block: 0 1.15em; max-width: 68ch; }
+  .prose :global(strong) { font-weight: 600; color: var(--fg); }
+  .prose :global(em) { font-style: italic; }
+
+  .stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-size: var(--t-micro);
+  }
+  .stack span {
+    border: 1px solid var(--line);
+    padding: 0.3rem 0.6rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  .back { margin-top: 3rem; font-size: var(--t-small); color: var(--muted); }
+  .back a { border-bottom: 1px solid var(--line); }
+  .back a:hover { border-color: var(--accent); }
+</style>
