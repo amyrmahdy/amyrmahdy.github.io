@@ -7,8 +7,6 @@ import { glob, file } from "astro/loaders";
  * in their components.
  */
 
-const STAGES = ["surface", "descent", "pressure", "crystallization", "ascent"] as const;
-
 /**
  * Case studies. These carry the numbers that currently exist only in the CV and
  * are invisible to search — "85% faster multi-agent soil classification" is a
@@ -70,25 +68,4 @@ const essays = defineCollection({
   }),
 });
 
-/**
- * Book chapter teasers. Front-matter is the entire payload — there is no body
- * field, so a manuscript draft cannot accidentally land in the public repo.
- * Teasers are written as marketing copy and pasted in by hand from the private
- * harvest-book repo; no automation crosses that boundary.
- */
-const book = defineCollection({
-  loader: glob({ pattern: "**/[^_]*.md", base: "./src/content/book" }),
-  schema: z.object({
-    order: z.number().int(),
-    part: z.enum(STAGES),
-    title: z.string(),
-    teaser: z.string().max(400),
-    pullQuote: z.string().max(200).optional(),
-    status: z
-      .enum(["outlined", "drafting", "drafted", "edited"])
-      .default("outlined"),
-    published: z.boolean().default(false),
-  }),
-});
-
-export const collections = { proof, essays, book };
+export const collections = { proof, essays };

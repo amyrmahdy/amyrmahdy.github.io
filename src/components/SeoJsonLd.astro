@@ -1,13 +1,16 @@
 ---
 /**
- * Structured data. @id cross-references let Google link the Person and the Book
- * as one entity graph rather than treating them as unrelated documents.
+ * Structured data.
+ *
+ * Only claims that are independently checkable go in here: a name, a role, an
+ * employer, two profiles. Structured data is machine-readable assertion, so
+ * anything unverified must not appear.
  *
  * Note: no LinkedIn in sameAs. That is a deliberate brand constraint, not an
  * oversight — do not "helpfully" add it.
  */
 interface Props {
-  type?: "home" | "book" | "page";
+  type?: "home" | "page";
 }
 
 const { type = "page" } = Astro.props;
@@ -47,22 +50,11 @@ const person = {
   sameAs: ["https://github.com/amyrmahdy", "https://amyrmahdy.medium.com"],
 };
 
-const book = {
-  "@type": "Book",
-  "@id": `${site}/#book`,
-  name: "Nothing Rare About Carbon",
-  author: { "@id": `${site}/#person` },
-  inLanguage: "en",
-  abstract:
-    "How pressure, speed and structure turn ordinary material into the most valuable thing you can hold — and why every enterprise AI programme fails on the way up.",
-  about: "The Harvest Methodology, told as the story of being forced to invent it.",
-};
 
 const graph =
   type === "home"
     ? [
         person,
-        book,
         {
           "@type": "ProfilePage",
           "@id": `${site}/#profile`,
@@ -70,9 +62,7 @@ const graph =
           url: `${site}/`,
         },
       ]
-    : type === "book"
-      ? [person, book]
-      : [person];
+    : [person];
 
 const jsonld = { "@context": "https://schema.org", "@graph": graph };
 ---
