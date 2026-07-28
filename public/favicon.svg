@@ -1,14 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <!-- Round brilliant in profile at real grading proportions: table 56%,
-       crown 14.5%, girdle 3%, pavilion 43.1%. The cut, not the carat. -->
-  <g fill="none" stroke="#eef9fd" stroke-width="5" stroke-linejoin="round">
-    <!-- crown: table edge down to girdle -->
-    <path d="M28 38 H72 L86 52 H14 Z" />
-    <!-- pavilion: girdle down to culet -->
-    <path d="M14 52 L50 92 L86 52" />
+  <!-- The wand: dark rod, bright ferrules, a spark at the working tip. -->
+  <g stroke="#eef9fd" stroke-linecap="round">
+    <line x1="26" y1="78" x2="64" y2="40" stroke-width="9" opacity="0.55" />
+    <line x1="22" y1="82" x2="30" y2="74" stroke-width="13" />
   </g>
-  <!-- crown facet junctions -->
-  <g stroke="#eef9fd" stroke-width="3" opacity="0.55">
-    <path d="M28 38 L14 52 M72 38 L86 52 M50 38 V52" />
-  </g>
+  <!-- four-point spark -->
+  <path
+    d="M72 32 L76.5 43.5 L88 48 L76.5 52.5 L72 64 L67.5 52.5 L56 48 L67.5 43.5 Z"
+    fill="#eef9fd"
+  />
 </svg>

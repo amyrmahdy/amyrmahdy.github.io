@@ -15,81 +15,69 @@ const featured = (await getCollection("proof"))
   description="Privacy-first AI architecture for European enterprise. Creator of The Harvest Methodology."
   schema="home"
 >
-  <!-- ── the stone ─────────────────────────────────────────────────────── -->
-  <section class="hero">
-    <div class="stage">
-      <Scene client:load />
-      <!-- Shown until the canvas paints, and permanently on the static tier. -->
-      <div class="poster" aria-hidden="true"></div>
-    </div>
+  <!-- Fixed, so the three tricks play out across the whole scroll rather than
+       sliding off with the first screen. -->
+  <div class="stage">
+    <Scene client:load />
+    <div class="poster" aria-hidden="true"></div>
+  </div>
 
-    <div class="hero-copy">
-      <p class="eyebrow">// A. M. MADANI</p>
-      <h1>Same carbon.</h1>
-      <p class="lead">
-        Graphite and diamond are the same element. Pressure, structure and speed
-        are the entire difference &mdash; in geology, and in what your engineering
-        organisation produces.
-      </p>
-      <p class="hero-links mono">
-        <a href="#proof">The evidence</a>
-        <a href="/dossier/">Dossier</a>
-        <a href="mailto:amyrmahdy1@gmail.com">Talk</a>
-      </p>
-    </div>
-
-    <p class="scrim mono" aria-hidden="true">SCROLL</p>
+  <!-- ACT I ─ the reveal ────────────────────────────────────────────────── -->
+  <section class="act act-1">
+    <p class="eyebrow">// A. M. MADANI &mdash; AI SOLUTIONS ARCHITECT</p>
+    <h1>The trick is repeatable.</h1>
+    <p class="lead">
+      A diamond is carbon that got the conditions right. So is an engineering
+      organisation that ships. I build the conditions &mdash; privacy-first AI
+      architecture for European enterprise.
+    </p>
+    <p class="links mono">
+      <a href="#proof">Evidence</a>
+      <a href="/dossier/">Dossier</a>
+      <a href="mailto:amyrmahdy1@gmail.com">Talk</a>
+    </p>
+    <p class="cue mono" aria-hidden="true">SCROLL &mdash; WATCH</p>
   </section>
 
-  <!-- ── three beats ───────────────────────────────────────────────────── -->
-  <section class="beats" id="proof">
-    <ol>
+  <!-- ACT II ─ the divide ───────────────────────────────────────────────── -->
+  <section class="act act-2" id="proof">
+    <p class="eyebrow">// DONE, NOT CLAIMED</p>
+    <ol class="beats">
       {
         featured.map((p) => (
           <li>
             <a href={`/proof/${p.id}/`}>
-              <span class="beat-n mono">{p.data.metrics[0].value}</span>
-              <span class="beat-l">{p.data.metrics[0].label}</span>
-              <span class="beat-c mono">
-                {p.data.codename ?? p.data.title.slice(0, 40)}
-              </span>
+              <span class="n mono">{p.data.metrics[0].value}</span>
+              <span class="l">{p.data.metrics[0].label}</span>
+              <span class="c mono">{p.data.codename ?? p.data.org}</span>
             </a>
           </li>
         ))
       }
     </ol>
-    <p class="beats-more mono">
+    <p class="more mono">
       <a href="/proof/">Nine systems, every number with its method &rarr;</a>
     </p>
   </section>
 
-  <!-- ── one ask ───────────────────────────────────────────────────────── -->
-  <section class="ask">
+  <!-- ACT III ─ the vanish ──────────────────────────────────────────────── -->
+  <section class="act act-3">
     <WaitlistForm
       placement="book"
       eyebrow="// THE HARVEST FIELD CARD"
-      heading="The methodology on one page."
-      blurb="The loop, the ICE sheet, the quality floor. One page, made to be pinned to a wall."
+      heading="The method on one page."
+      blurb="The loop, the scoring sheet, the quality floor. Made to be pinned to a wall."
       button="Send the card"
     />
   </section>
 </ShellLayout>
 
 <style>
-  /* ── hero ──────────────────────────────────────────────────────────── */
-  .hero {
-    position: relative;
-    min-height: 100svh;
-    display: grid;
-    align-content: center;
-    padding: var(--gutter);
-    overflow: hidden;
-  }
-
   .stage {
-    position: absolute;
+    position: fixed;
     inset: 0;
     z-index: 0;
+    pointer-events: none;
   }
   .stage :global(canvas) {
     display: block;
@@ -97,119 +85,120 @@ const featured = (await getCollection("proof"))
     height: 100% !important;
   }
 
-  /* A quiet radial suggestion of the stone, so the first frame is never empty
-     and the static tier still looks composed. */
+  /* Holds the frame before the first paint, and permanently on the static
+     tier, so the page is never blank and never obviously missing something. */
   .poster {
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(38% 38% at 58% 46%, color-mix(in oklab, var(--ice) 14%, transparent), transparent 70%),
-      radial-gradient(60% 50% at 50% 100%, color-mix(in oklab, var(--ember) 7%, transparent), transparent 70%);
-    transition: opacity 900ms var(--ease-mantle);
+      radial-gradient(30% 30% at 62% 44%, color-mix(in oklab, var(--ice) 13%, transparent), transparent 70%),
+      radial-gradient(70% 50% at 50% 105%, color-mix(in oklab, var(--ember) 6%, transparent), transparent 70%);
+    transition: opacity 1s var(--ease-mantle);
   }
   :global(html.gl-active) .poster { opacity: 0; }
 
-  .hero-copy {
+  .act {
     position: relative;
     z-index: 1;
-    max-width: 34rem;
-    /* Sits left of the stone rather than on top of it. */
-    margin-inline-end: auto;
+    min-height: 100svh;
+    display: grid;
+    align-content: center;
+    max-width: var(--w-wide);
+    margin-inline: auto;
+    padding: var(--gutter);
+    padding-block: clamp(4rem, 12vh, 8rem);
   }
+
+  /* Copy keeps to the left half so the stone owns the right of the frame. */
+  .act-1 > * { max-width: 32rem; }
 
   h1 {
     font-size: var(--t-monument);
-    margin-block: 0.75rem 1.25rem;
+    margin-block: 1rem 1.5rem;
   }
-  .lead { max-width: 30ch; }
+  .lead { max-width: 34ch; color: var(--muted); }
 
-  .hero-links {
+  .links {
     display: flex;
     gap: 1.75rem;
-    margin-top: 2.25rem;
+    margin-top: 2.5rem;
     font-size: var(--t-small);
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
   }
-  .hero-links a {
+  .links a {
     color: var(--accent);
-    border-bottom: 1px solid color-mix(in oklab, var(--accent) 35%, transparent);
+    border-bottom: 1px solid color-mix(in oklab, var(--accent) 32%, transparent);
     padding-bottom: 0.3rem;
   }
-  .hero-links a:hover { border-color: var(--accent); }
+  .links a:hover { border-color: var(--accent); }
 
-  .scrim {
-    position: absolute;
-    left: var(--gutter);
-    bottom: 1.75rem;
-    z-index: 1;
+  .cue {
+    margin-top: 4rem;
     font-size: var(--t-micro);
     letter-spacing: 0.34em;
     color: var(--muted);
-    opacity: 0.6;
+    opacity: 0.55;
   }
 
-  /* ── beats ─────────────────────────────────────────────────────────── */
+  /* ── act II ─────────────────────────────────────────────────────────── */
   .beats {
-    max-width: var(--w-wide);
-    margin-inline: auto;
-    padding: clamp(4rem, 12vh, 7rem) var(--gutter);
-  }
-  .beats ol {
     list-style: none;
-    margin: 0;
+    margin: 1.5rem 0 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
     gap: 1px;
     background: var(--line);
     border: 1px solid var(--line);
+    /* Sits over the canvas, so it needs its own ground. */
+    backdrop-filter: blur(10px);
   }
   .beats a {
     display: block;
-    background: var(--bg);
-    padding: 2rem 1.5rem;
+    background: color-mix(in oklab, var(--bg) 78%, transparent);
+    padding: 1.9rem 1.4rem;
     height: 100%;
     transition: background-color var(--dur-quick) var(--ease-facet);
   }
   .beats a:hover { background: var(--surface); color: inherit; }
 
-  .beat-n {
+  .n {
     display: block;
     font-size: var(--t-h2);
     font-weight: 500;
     color: var(--accent);
     line-height: 1;
   }
-  .beat-l {
+  .l {
     display: block;
-    margin-top: 0.7rem;
+    margin-top: 0.65rem;
     font-size: var(--t-small);
-    color: var(--fg);
     line-height: 1.4;
   }
-  .beat-c {
+  .c {
     display: block;
-    margin-top: 1rem;
+    margin-top: 0.9rem;
     font-size: var(--t-micro);
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--muted);
   }
 
-  .beats-more { margin-top: 1.5rem; font-size: var(--t-micro); letter-spacing: 0.1em; }
-  .beats-more a { color: var(--muted); }
-  .beats-more a:hover { color: var(--accent); }
+  .more { margin-top: 1.25rem; font-size: var(--t-micro); letter-spacing: 0.08em; }
+  .more a { color: var(--muted); }
+  .more a:hover { color: var(--accent); }
 
-  /* ── ask ───────────────────────────────────────────────────────────── */
-  .ask {
-    max-width: var(--w-text);
-    margin-inline: auto;
-    padding: 0 var(--gutter) clamp(5rem, 14vh, 8rem);
-  }
+  /* ── act III ────────────────────────────────────────────────────────── */
+  .act-3 { max-width: var(--w-text); }
 
   @media (max-width: 900px) {
-    .hero { align-content: end; padding-bottom: 5rem; }
-    .hero-copy { max-width: none; }
+    .act-1 { align-content: end; }
+    .act-1 > * { max-width: none; }
     .lead { max-width: 40ch; }
+    .cue { margin-top: 2.5rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .poster { opacity: 1 !important; }
   }
 </style>

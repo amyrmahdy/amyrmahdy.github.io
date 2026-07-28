@@ -1,38 +1,77 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment, Lightformer } from "@react-three/drei";
 import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
 import { Stone } from "./Stone";
-import { Carbon } from "./Carbon";
+import { Sparks } from "./Sparks";
+import { Wand } from "./Wand";
+import { useScrollProgress } from "@lib/useScrollProgress";
+import { acts, damp, smoothstep, wandPose, type Acts } from "@lib/choreography";
 
-/** Drives the arrival transmutation once, on mount. */
-function Reveal({ target }: { target: React.RefObject<number> }) {
-  useFrame((_, dt) => {
-    target.current = Math.min(1, (target.current ?? 0) + dt / 2.2);
-  });
-  return null;
-}
-
-/** Damped pointer parallax, so nothing feels twitchy. */
-function Parallax() {
-  const target = useRef({ x: 0, y: 0 });
+/**
+ * Three tricks, driven by the page scroll.
+ *
+ *   I   THE REVEAL   the wand sweeps, the dust gathers, a stone appears
+ *   II  THE DIVIDE   the wand taps, one stone becomes three
+ *   III THE VANISH   the wand sweeps back, everything returns to dust
+ */
+function Act({
+  actsRef,
+  tipRef,
+  progress,
+}: {
+  actsRef: React.RefObject<Acts>;
+  tipRef: React.RefObject<THREE.Vector3>;
+  progress: React.RefObject<number>;
+}) {
+  const wand = useRef<THREE.Group>(null!);
+  const smooth = useRef(0);
+  const pointer = useRef({ x: 0, y: 0 });
+  const worldTip = useMemo(() => new THREE.Vector3(), []);
 
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
-      target.current.x = (e.clientX / window.innerWidth) * 2 - 1;
-      target.current.y = (e.clientY / window.innerHeight) * 2 - 1;
+      pointer.current.x = (e.clientX / window.innerWidth) * 2 - 1;
+      pointer.current.y = (e.clientY / window.innerHeight) * 2 - 1;
     };
     window.addEventListener("pointermove", onMove, { passive: true });
     return () => window.removeEventListener("pointermove", onMove);
   }, []);
 
-  useFrame((state) => {
-    state.camera.position.x += (target.current.x * 0.5 - state.camera.position.x) * 0.04;
-    state.camera.position.y += (-target.current.y * 0.3 - state.camera.position.y) * 0.04;
-    state.camera.lookAt(0, 0, 0);
+  useFrame((state, dt) => {
+    const d = Math.min(dt, 1 / 30);
+    // Smooths the animation's pursuit of scroll without touching scroll itself.
+    smooth.current = damp(smooth.current, progress.current ?? 0, 6, d);
+    const p = smooth.current;
+    const a = acts(p);
+    actsRef.current = a;
+
+    const t = state.clock.elapsedTime;
+    const g = wand.current;
+
+    // One continuous gesture, read as three tricks. Pure function of scroll —
+    // see lib/choreography.ts, which is unit-tested.
+    const pose = wandPose(p, Math.sin(t * 0.9) * 0.05);
+    g.position.set(pose.x, pose.y, pose.z);
+    g.rotation.z = pose.rz;
+    g.rotation.x = Math.sin(t * 0.7) * 0.06;
+
+    // World position of the glowing tip, for the sparks to chase.
+    worldTip.set(0, 1.2, 0);
+    g.localToWorld(worldTip);
+    tipRef.current?.copy(worldTip);
+
+    // Damped pointer parallax on the camera.
+    const cam = state.camera;
+    cam.position.x = damp(cam.position.x, pointer.current.x * 0.55, 3, d);
+    cam.position.y = damp(cam.position.y, -pointer.current.y * 0.32, 3, d);
+    // Pulls back a touch as the stones spread so the trio stays framed.
+    cam.position.z = damp(cam.position.z, 5.1 + smoothstep(a.split) * 1.5, 3, d);
+    cam.lookAt(0, 0, 0);
   });
-  return null;
+
+  return <Wand ref={wand} />;
 }
 
 function useAllowed() {
@@ -42,11 +81,8 @@ function useAllowed() {
       matchMedia("(prefers-reduced-motion: reduce)").matches ||
       localStorage.getItem("amm:reduce-motion") === "1";
     if (reduced) return;
-    if ((navigator as never as { connection?: { saveData?: boolean } }).connection?.saveData) return;
-
-    // failIfMajorPerformanceCaveat pushes software-rasterised WebGL — VMs and
-    // locked-down corporate laptops, a real slice of this audience — to the
-    // static poster rather than letting it run at 4fps.
+    if ((navigator as unknown as { connection?: { saveData?: boolean } }).connection?.saveData)
+      return;
     try {
       const c = document.createElement("canvas");
       const gl = c.getContext("webgl2", { failIfMajorPerformanceCaveat: true });
@@ -62,53 +98,58 @@ function useAllowed() {
 
 export default function Scene() {
   const allowed = useAllowed();
-  const reveal = useRef(0);
-  const coarse =
-    typeof window !== "undefined" && matchMedia("(pointer: coarse)").matches;
+  const progress = useScrollProgress();
+  const actsRef = useRef<Acts>({ reveal: 0, split: 0, vanish: 0 });
+  const tipRef = useRef(new THREE.Vector3());
+  const [lowPower, setLowPower] = useState(false);
+
+  useEffect(() => {
+    setLowPower(
+      matchMedia("(pointer: coarse)").matches ||
+        (navigator.hardwareConcurrency ?? 8) <= 4
+    );
+  }, []);
 
   if (!allowed) return null;
 
   return (
     <Canvas
-      className="scene-canvas"
-      dpr={[1, coarse ? 1 : 1.75]}
+      dpr={[1, lowPower ? 1 : 1.75]}
       gl={{
         antialias: false,
         alpha: true,
         powerPreference: "high-performance",
         failIfMajorPerformanceCaveat: true,
       }}
-      camera={{ position: [0, 0, 5.2], fov: 38 }}
+      camera={{ position: [0, 0, 5.1], fov: 40 }}
       onCreated={({ gl }) => {
         gl.toneMapping = THREE.ACESFilmicToneMapping;
-        gl.toneMappingExposure = 1.15;
+        gl.toneMappingExposure = 1.1;
         document.documentElement.classList.add("gl-active");
       }}
     >
-      <Reveal target={reveal} />
-      <Parallax />
+      <Act actsRef={actsRef} tipRef={tipRef} progress={progress} />
+      <Sparks count={lowPower ? 240 : 460} actsRef={actsRef} tip={tipRef} />
+      <Stone actsRef={actsRef} lowPower={lowPower} />
 
-      <Carbon count={coarse ? 240 : 420} reveal={reveal} />
-      <Stone reveal={reveal} />
-
-      {/* Dispersion only shows against small, intensely bright sources — a big
-          soft environment averages the channels back together and the fire dies.
-          Lightformers keep it local, so there is no HDR to fetch. */}
+      {/* Small, intensely bright sources: dispersion is invisible against a
+          soft environment, which averages the three channels back together.
+          Built from Lightformers, so there is no HDR to fetch. */}
       <Environment resolution={256}>
-        <Lightformer intensity={12} position={[2, 3, 4]} scale={[3, 1, 1]} />
-        <Lightformer intensity={6} position={[-3, 1, 2]} scale={[2, 0.6, 1]} color="#bfe9ff" />
-        <Lightformer intensity={4} position={[0, -3, 2]} scale={[4, 1, 1]} color="#ff9b50" />
-        <Lightformer
-          intensity={2}
-          form="ring"
-          position={[0, 0, -4]}
-          scale={[6, 6, 1]}
-        />
+        <Lightformer intensity={10} position={[2, 3, 4]} scale={[3, 1, 1]} />
+        <Lightformer intensity={5} position={[-3, 1, 2]} scale={[2, 0.6, 1]} color="#bfe9ff" />
+        <Lightformer intensity={3} position={[0, -3, 2]} scale={[4, 1, 1]} color="#ff9b50" />
+        <Lightformer intensity={1.6} form="ring" position={[0, 0, -5]} scale={[7, 7, 1]} />
       </Environment>
 
       <EffectComposer enableNormalPass={false}>
-        <Bloom intensity={0.7} luminanceThreshold={0.62} luminanceSmoothing={0.25} mipmapBlur />
-        <Vignette eskil={false} offset={0.25} darkness={0.85} />
+        <Bloom
+          intensity={0.85}
+          luminanceThreshold={0.55}
+          luminanceSmoothing={0.3}
+          mipmapBlur
+        />
+        <Vignette eskil={false} offset={0.24} darkness={0.85} />
       </EffectComposer>
     </Canvas>
   );
