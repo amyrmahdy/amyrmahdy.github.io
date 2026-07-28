@@ -1,0 +1,42 @@
+---
+/**
+ * The canvas sits behind everything and can never receive a click, a text
+ * selection, or a focus ring. CLS is zero by construction: it is fixed, so it
+ * never participates in layout.
+ */
+---
+
+<canvas id="stage" aria-hidden="true" role="presentation"></canvas>
+
+<style is:global>
+  #stage {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 900ms var(--ease-mantle);
+  }
+
+  /* Set only after the first successful frame. */
+  html.gl-active #stage {
+    opacity: 1;
+  }
+
+  /* All content sits above the canvas. */
+  main,
+  .rail,
+  .rail-progress,
+  .skip-link {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Text must never rely on the canvas happening to be dark behind it. */
+  html.gl-active .chapter > * {
+    position: relative;
+  }
+</style>

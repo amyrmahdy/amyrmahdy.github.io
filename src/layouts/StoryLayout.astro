@@ -6,6 +6,7 @@
  */
 import Head from "@components/Head.astro";
 import DepthRail from "@components/story/DepthRail.astro";
+import Stage from "@components/story/Stage.astro";
 import "@styles/global.css";
 
 interface Props {
@@ -27,6 +28,7 @@ const {
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
 
+    <Stage />
     <DepthRail />
 
     <main id="main" tabindex="-1">
@@ -35,7 +37,12 @@ const {
 
     <script>
       import { initDepth } from "@scripts/depth";
+      import { bootStage } from "@scripts/boot";
+
+      // The zero-JS-adjacent base layer first; the canvas is scheduled at idle
+      // on top of it and never blocks it.
       initDepth();
+      bootStage();
     </script>
   </body>
 </html>
