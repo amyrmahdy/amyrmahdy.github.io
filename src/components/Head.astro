@@ -1,6 +1,7 @@
 ---
 /** Shared document head. Both the narrative and the satellite pages use this. */
 import MatomoTracker from "@components/MatomoTracker.astro";
+import SeoJsonLd from "@components/SeoJsonLd.astro";
 
 interface Props {
   pageTitle: string;
@@ -8,6 +9,7 @@ interface Props {
   ogType?: string;
   ogImage?: string;
   noindex?: boolean;
+  schema?: "home" | "book" | "page";
 }
 
 const {
@@ -16,6 +18,7 @@ const {
   ogType = "website",
   ogImage = "/og/default.png",
   noindex = false,
+  schema = "page",
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -68,5 +71,7 @@ const ogImageUrl = new URL(ogImage, Astro.site);
 />
 
 <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+<SeoJsonLd type={schema} />
 
 {import.meta.env.PROD && <MatomoTracker />}

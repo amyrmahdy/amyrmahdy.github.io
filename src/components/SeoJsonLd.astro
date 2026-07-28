@@ -1,0 +1,83 @@
+---
+/**
+ * Structured data. @id cross-references let Google link the Person and the Book
+ * as one entity graph rather than treating them as unrelated documents.
+ *
+ * Note: no LinkedIn in sameAs. That is a deliberate brand constraint, not an
+ * oversight — do not "helpfully" add it.
+ */
+interface Props {
+  type?: "home" | "book" | "page";
+}
+
+const { type = "page" } = Astro.props;
+const site = Astro.site?.origin ?? "https://amyrmahdy.github.io";
+
+const person = {
+  "@type": "Person",
+  "@id": `${site}/#person`,
+  name: "Amir Mahdi Madani",
+  alternateName: "A. M. Madani",
+  jobTitle: "AI Solutions Architect",
+  description:
+    "AI Solutions Architect and CTO. Designs privacy-first AI agentic architectures for European enterprise. Creator of The Harvest Methodology.",
+  url: `${site}/`,
+  email: "mailto:amyrmahdy1@gmail.com",
+  worksFor: {
+    "@type": "Organization",
+    name: "Smartway Solutions",
+    address: { "@type": "PostalAddress", addressCountry: "DE" },
+  },
+  alumniOf: [
+    { "@type": "CollegeOrUniversity", name: "Astrakhan State University" },
+    {
+      "@type": "CollegeOrUniversity",
+      name: "Mahalat Higher Educational Institution",
+    },
+  ],
+  knowsAbout: [
+    "AI Solutions Architecture",
+    "Multi-Agent Systems",
+    "Retrieval-Augmented Generation",
+    "LLM Evaluation",
+    "Privacy-First AI",
+    "The Harvest Methodology",
+    "Forward Deployed Engineering",
+  ],
+  sameAs: ["https://github.com/amyrmahdy", "https://amyrmahdy.medium.com"],
+};
+
+const book = {
+  "@type": "Book",
+  "@id": `${site}/#book`,
+  name: "Nothing Rare About Carbon",
+  author: { "@id": `${site}/#person` },
+  inLanguage: "en",
+  abstract:
+    "How pressure, speed and structure turn ordinary material into the most valuable thing you can hold — and why every enterprise AI programme fails on the way up.",
+  about: "The Harvest Methodology, told as the story of being forced to invent it.",
+};
+
+const graph =
+  type === "home"
+    ? [
+        person,
+        book,
+        {
+          "@type": "ProfilePage",
+          "@id": `${site}/#profile`,
+          mainEntity: { "@id": `${site}/#person` },
+          url: `${site}/`,
+        },
+      ]
+    : type === "book"
+      ? [person, book]
+      : [person];
+
+const jsonld = { "@context": "https://schema.org", "@graph": graph };
+---
+
+<script
+  type="application/ld+json"
+  set:html={JSON.stringify(jsonld)}
+/>

@@ -22,7 +22,7 @@ const {
 
 <html lang="en">
   <head>
-    <Head pageTitle={pageTitle} description={description} />
+    <Head pageTitle={pageTitle} description={description} schema="home" />
   </head>
 
   <body>
@@ -38,10 +38,12 @@ const {
     <script>
       import { initDepth } from "@scripts/depth";
       import { bootStage } from "@scripts/boot";
+      import { initChapterFunnel } from "@lib/analytics";
 
       // The zero-JS-adjacent base layer first; the canvas is scheduled at idle
       // on top of it and never blocks it.
       initDepth();
+      initChapterFunnel();
       bootStage();
     </script>
   </body>

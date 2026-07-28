@@ -10,7 +10,7 @@
     {
       "name": "dist",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["--yes", "serve", "-s", "dist", "-l", "4331"],
+      "runtimeArgs": ["--yes", "serve", "dist", "-l", "4331"],
       "port": 4331
     }
   ]

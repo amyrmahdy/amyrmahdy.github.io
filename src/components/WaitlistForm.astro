@@ -144,6 +144,7 @@ const id = `wl-${placement}`;
 
 <script>
   import { subscribe, type SubscribeReason } from "@lib/subscribe";
+  import { track, trackGoal } from "@lib/analytics";
 
   const MESSAGES: Record<SubscribeReason, string> = {
     invalid: "That address didn't look right. Try again?",
@@ -169,6 +170,17 @@ const id = `wl-${placement}`;
       else delete status.dataset.tone;
     };
 
+    // Which offer actually converts — the field card or the first chapter.
+    const seen = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        track("Waitlist", "View", placement);
+        seen.disconnect();
+      },
+      { threshold: 0.5 }
+    );
+    seen.observe(root);
+
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
@@ -176,6 +188,7 @@ const id = `wl-${placement}`;
       button.textContent = "Sending…";
       email.removeAttribute("aria-invalid");
       say("", "");
+      track("Waitlist", "SubmitAttempt", placement);
 
       const result = await subscribe(email.value, {
         honeypot: honeypot.value,
@@ -183,13 +196,18 @@ const id = `wl-${placement}`;
         placement,
       });
 
-      // A caught bot is shown the success state. Never tell it it was caught.
+      // A caught bot is shown the success state. Never tell it it was caught —
+      // and never record it, or the funnel fills with bots.
       if (result.ok || result.reason === "spam") {
         root.dataset.done = "true";
         say(
           "Check your inbox — there's a confirmation email. You're not on the list until you click it.",
           "ok"
         );
+        if (result.ok) {
+          track("Waitlist", "SubmitSuccess", placement);
+          trackGoal(1);
+        }
         return;
       }
 
@@ -197,6 +215,7 @@ const id = `wl-${placement}`;
       button.textContent = originalLabel;
       if (result.reason === "invalid") email.setAttribute("aria-invalid", "true");
       say(MESSAGES[result.reason], "err");
+      track("Waitlist", "SubmitError", result.reason);
       // The typed address stays in the field: retry should not be punished.
     });
   });

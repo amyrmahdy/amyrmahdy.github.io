@@ -1,23 +1,39 @@
 ---
-const matomoUrl = import.meta.env.PUBLIC_MATOMO_URL || 'https://mymatomo.darkube.app';
-const siteId = import.meta.env.PUBLIC_MATOMO_SITE_ID || '1';
+/**
+ * Self-hosted Matomo, cookieless.
+ *
+ * `disableCookies` is the load-bearing line. Without cookies and with IP
+ * anonymisation this stores no personal data and needs no consent banner —
+ * which matters twice over here: no modal covering the hero, and a privacy
+ * claim a technical buyer can verify in the network tab rather than take on
+ * faith. A page arguing privacy-first architecture cannot ship a tracker that
+ * contradicts it.
+ *
+ * `define:vars` rather than `is:inline`: they are mutually exclusive, and the
+ * previous version read env vars into frontmatter that the inlined script could
+ * not see, then hardcoded the values anyway.
+ */
+const matomoUrl =
+  import.meta.env.PUBLIC_MATOMO_URL || "https://mymatomo.darkube.app";
+const siteId = import.meta.env.PUBLIC_MATOMO_SITE_ID || "1";
 ---
 
-<script is:inline>
-  // Directly inject the values - no template literals
-  var _paq = window._paq = window._paq || [];
-  _paq.push(['setTrackerUrl', 'https://mymatomo.darkube.app/matomo.php']);
-  _paq.push(['setSiteId', '1']);
-  _paq.push(['trackPageView']);
-  _paq.push(['enableLinkTracking']);
-  
-  (function() {
-    var d = document, g = d.createElement('script');
-    g.src = 'https://mymatomo.darkube.app/matomo.js';
-    g.async = true;
-    g.defer = true;
-    g.onload = function() { console.log('Matomo loaded successfully'); };
-    g.onerror = function(e) { console.error('Matomo failed to load', e); };
-    d.head.appendChild(g);
-  })();
+<script define:vars={{ matomoUrl, siteId }}>
+  window._paq = window._paq || [];
+  const _paq = window._paq;
+
+  _paq.push(["disableCookies"]);
+  _paq.push(["setSecureCookie", true]);
+  _paq.push(["setTrackerUrl", matomoUrl + "/matomo.php"]);
+  _paq.push(["setSiteId", siteId]);
+  _paq.push(["enableLinkTracking"]);
+  _paq.push(["trackPageView"]);
+
+  const s = document.createElement("script");
+  s.src = matomoUrl + "/matomo.js";
+  s.async = true;
+  s.defer = true;
+  // No onload/onerror logging: analytics failing is not the visitor's problem,
+  // and console noise in production reads as unfinished.
+  document.head.appendChild(s);
 </script>
