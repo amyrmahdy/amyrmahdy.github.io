@@ -288,6 +288,34 @@ const essays = (await getCollection("essays")).sort(
       the precondition for it.
     </p>
 
+    <!-- The one interactive claim on the site: the reader's own scroll speed
+         decides which of these is true. With reduced motion or no JS both
+         panels show as a labelled diptych, and the argument survives verbatim. -->
+    <div class="assay wide" data-assay>
+      <figure class="assay-panel" data-panel="fast">
+        <figcaption class="mono">
+          <span class="assay-tag">FAST ASCENT</span>
+          <span class="assay-out">DIAMOND</span>
+        </figcaption>
+        <p>
+          Hours, not eons. The carbon reaches the surface still locked in the
+          arrangement that pressure gave it.
+        </p>
+      </figure>
+      <figure class="assay-panel" data-panel="slow">
+        <figcaption class="mono">
+          <span class="assay-tag">SLOW ASCENT</span>
+          <span class="assay-out assay-out-bad">GRAPHITE</span>
+        </figcaption>
+        <p>
+          Given time on the way up, the same atoms relax into the form that is
+          stable at the surface. Nothing was lost in transit. It simply stopped
+          being worth anything.
+        </p>
+      </figure>
+      <p class="assay-note mono" data-assay-note aria-live="polite"></p>
+    </div>
+
     <p>
       That is <strong>Deliver First</strong>, and it is why 10x is a structural
       claim rather than a boast. Value that takes eighteen months to surface is
@@ -489,6 +517,80 @@ const essays = (await getCollection("essays")).sort(
     color: var(--muted);
     font-size: var(--t-small);
     line-height: 1.6;
+  }
+
+  /* ── the assay (chapter 6) ──────────────────────────────────────────── */
+  .assay {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    margin-block: 2.5rem 0;
+  }
+  .assay-panel {
+    background: var(--bg);
+    margin: 0;
+    padding: 1.5rem 1.35rem;
+    transition:
+      opacity var(--dur-erupt) var(--ease-erupt),
+      filter var(--dur-erupt) var(--ease-erupt);
+  }
+  .assay-panel figcaption {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: baseline;
+    font-size: var(--t-micro);
+    letter-spacing: 0.16em;
+  }
+  .assay-tag { color: var(--muted); }
+  .assay-out { color: var(--accent); font-weight: 500; }
+  .assay-out-bad { color: var(--muted); }
+  .assay-panel p {
+    margin: 0.85rem 0 0;
+    font-size: var(--t-small);
+    line-height: 1.6;
+    color: var(--muted);
+  }
+  .assay-note {
+    grid-column: 1 / -1;
+    background: var(--bg);
+    margin: 0;
+    padding: 0.9rem 1.35rem;
+    font-size: var(--t-micro);
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    min-height: 1.2em;
+  }
+
+  /* Default (no JS, reduced motion): both panels equal — a labelled diptych
+     that states the claim without needing to be operated. */
+  [data-assay] .assay-panel { opacity: 1; }
+
+  /* Live: whichever outcome the reader is currently earning is the lit one.
+     The state attribute lives on [data-assay] rather than on the chapter
+     <section>, because that section is rendered by Chapter.astro and so does
+     not carry this component's scope id — an ancestor selector would be scoped
+     to a cid the element never has, and would silently never match. */
+  [data-assay][data-ascent="fast"] .assay-panel[data-panel="slow"],
+  [data-assay][data-ascent="slow"] .assay-panel[data-panel="fast"] {
+    opacity: 0.32;
+    filter: saturate(0.4);
+  }
+  [data-assay][data-ascent="slow"] .assay-panel[data-panel="slow"] {
+    box-shadow: inset 2px 0 0 var(--muted);
+  }
+  [data-assay][data-ascent="fast"] .assay-panel[data-panel="fast"] {
+    box-shadow: inset 2px 0 0 var(--accent);
+  }
+
+  @media (max-width: 640px) {
+    .assay { grid-template-columns: 1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .assay-panel { opacity: 1 !important; filter: none !important; }
   }
 
   .grid-note {

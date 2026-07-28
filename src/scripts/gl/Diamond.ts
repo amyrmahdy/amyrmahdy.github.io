@@ -61,6 +61,7 @@ export class Diamond {
       uEnv: { value: null },
       uTime: { value: 0 },
       uReveal: { value: 0 },
+      uCrystal: { value: 1 },
       uIce: { value: new THREE.Color("#eef9fd") },
       uEmber: { value: new THREE.Color("#ff9b50") },
     };
@@ -87,6 +88,7 @@ export class Diamond {
         uniform int  uPlaneCount;
         uniform float uTime;
         uniform float uReveal;
+        uniform float uCrystal;
         uniform vec3 uIce;
         uniform vec3 uEmber;
         varying vec3 vNormalW;
@@ -162,7 +164,17 @@ export class Diamond {
           vec3 spec = envSample(reflect(dir, nrm)) * fres * 1.4;
 
           vec3 col = inner * (1.0 - fres) + spec;
-          gl_FragColor = vec4(col, uReveal);
+
+          // Reverted carbon is graphite: opaque, grey, and it absorbs rather
+          // than returns light. Desaturate toward luminance and crush the
+          // brightness as crystallinity falls — the fire is the first thing to
+          // go, which is exactly the point being made.
+          float lum = dot(col, vec3(0.2126, 0.7152, 0.0722));
+          vec3 graphite = vec3(lum) * 0.16 + vec3(0.035, 0.036, 0.040);
+          col = mix(graphite, col, uCrystal);
+
+          float alpha = uReveal * mix(0.94, 1.0, uCrystal);
+          gl_FragColor = vec4(col, alpha);
         }
       `,
     });
@@ -243,11 +255,13 @@ export class Diamond {
     return this.uniforms.uPlaneCount.value as number;
   }
 
-  update(reveal: number, t: number) {
+  update(reveal: number, t: number, crystallinity = 1) {
     this.uniforms.uReveal.value = reveal;
     this.uniforms.uTime.value = t;
+    this.uniforms.uCrystal.value = crystallinity;
     this.mesh.visible = reveal > 0.01;
-    this.mesh.rotation.y = t * 0.18;
+    // A reverted stone turns more sluggishly — graphite is soft, not brilliant.
+    this.mesh.rotation.y = t * (0.06 + 0.12 * crystallinity);
   }
 
   dispose() {

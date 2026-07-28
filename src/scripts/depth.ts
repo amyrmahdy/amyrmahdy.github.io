@@ -7,6 +7,8 @@
  * GSAP/three.js layer loads later and on top, never instead.
  */
 
+import { updateAscent, ASCENT } from "./ascent";
+
 interface Telemetry {
   km: [number, number];
   celsius: [number, number];
@@ -75,6 +77,20 @@ export function initDepth() {
   if (!kmEl && !fillEl) return;
 
   let ticking = false;
+  let lastP = 0;
+  let lastT = performance.now();
+
+  // The ascent chapter, if present, is the one that reverses direction.
+  const ascentSection = sections.find((s) => {
+    const km = JSON.parse(s.dataset.km || "[0,0]");
+    return km[0] > km[1];
+  });
+  // State goes on the assay block, not the section: the section belongs to
+  // Chapter.astro and carries a different style scope.
+  const assay = ascentSection?.querySelector<HTMLElement>("[data-assay]") ?? null;
+  const reduced =
+    matchMedia("(prefers-reduced-motion: reduce)").matches ||
+    localStorage.getItem("amm:reduce-motion") === "1";
 
   const update = () => {
     ticking = false;
@@ -100,7 +116,69 @@ export function initDepth() {
     const p = clamp01(doc.scrollTop / Math.max(doc.scrollHeight - vh, 1));
     if (fillEl) fillEl.style.setProperty("--fill", String(p));
     root.style.setProperty("--depth", String(p));
+
+    lastP = p;
+    // Reverting must keep happening when the reader stops moving — a reader who
+    // simply halts inside chapter 6 is the strongest case of a slow ascent, and
+    // a scroll-driven update would never fire again to notice it.
+    if (ascentSection && !reduced) setAscentRunning(active === ascentSection);
   };
+
+  // ── ascent tick ────────────────────────────────────────────────────────
+  let ascentRaf = 0;
+
+  const tickAscent = () => {
+    const now = performance.now();
+    const dt = Math.max((now - lastT) / 1000, 1e-4);
+    lastT = now;
+
+    const doc = document.documentElement;
+    const p = clamp01(
+      doc.scrollTop / Math.max(doc.scrollHeight - window.innerHeight, 1)
+    );
+    const speed = Math.abs(p - lastP) / dt;
+    lastP = p;
+
+    const { state } = updateAscent(speed, dt, true);
+    if (assay && assay.dataset.ascent !== state) {
+      assay.dataset.ascent = state;
+      const note = assay.querySelector<HTMLElement>("[data-assay-note]");
+      if (note) {
+        note.textContent =
+          state === "slow"
+            ? "You are ascending too slowly. It is reverting."
+            : "Fast enough. It surfaces intact.";
+      }
+    }
+    assay?.style.setProperty("--crystallinity", ASCENT.crystallinity.toFixed(3));
+
+    ascentRaf = requestAnimationFrame(tickAscent);
+  };
+
+  function setAscentRunning(on: boolean) {
+    if (on && !ascentRaf) {
+      lastT = performance.now();
+      ascentRaf = requestAnimationFrame(tickAscent);
+    } else if (!on && ascentRaf) {
+      cancelAnimationFrame(ascentRaf);
+      ascentRaf = 0;
+      updateAscent(0, 0, false); // leaving the chapter resets the claim
+      if (assay) {
+        // Back to the neutral diptych, not to a "fast" verdict the reader
+        // did not earn on a chapter they are no longer reading.
+        delete assay.dataset.ascent;
+        assay.style.setProperty("--crystallinity", "1");
+        const note = assay.querySelector<HTMLElement>("[data-assay-note]");
+        if (note) note.textContent = "";
+      }
+    }
+  }
+
+  // A backgrounded tab must not silently revert the stone while nobody watches.
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) setAscentRunning(false);
+    else lastT = performance.now();
+  });
 
   const onScroll = () => {
     if (ticking) return;

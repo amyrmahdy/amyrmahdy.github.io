@@ -6,6 +6,7 @@
  * visitors get. If this module never loads, the site is already whole.
  */
 import * as THREE from "three";
+import { ASCENT } from "../ascent";
 import { onFrame, P } from "../scroll";
 import { AdaptiveQuality, QUALITY, type Tier } from "../tier";
 import { DEPTH_CURVE, TEMP_CURVE, clamp01, invLerp, lerp, smoothstep } from "./curve";
@@ -215,7 +216,13 @@ export class Stage {
     // The stone appears as the eruption arrests and stays for the evidence and
     // the ask. After all that speed, it simply sits there — the silence is the
     // payoff, so nothing else is on screen with it.
-    this.diamond.update(smoothstep(clamp01(invLerp(0.86, 0.93, p))), t);
+    // Crystallinity is earned during the ascent and carried into the reveal, so
+    // a reader who dawdled surfaces a duller, greyer stone than one who did not.
+    this.diamond.update(
+      smoothstep(clamp01(invLerp(0.86, 0.93, p))),
+      t,
+      ASCENT.crystallinity
+    );
 
     this.renderer.render(this.scene, this.camera);
     this.quality.sample(dt * 1000);
