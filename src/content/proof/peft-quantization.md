@@ -1,6 +1,6 @@
 ---
 title: Cutting monthly cloud GPU spend by 60% with PEFT and quantization
-org: VASL
+org: Confidential
 role: Head of AI
 period: 2023–2024
 summary: Applied parameter-efficient fine-tuning and aggressive model quantization to move production inference onto constrained hardware, removing the majority of a recurring cloud GPU bill without a quality regression.

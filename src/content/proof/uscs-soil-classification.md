@@ -1,6 +1,6 @@
 ---
 title: A six-step multi-agent pipeline that classified soil 85% faster than the manual process
-org: VASL
+org: Confidential
 role: Head of AI
 period: 2023–2024
 summary: Fully automated USCS geotechnical soil classification from raw borehole data using a six-step multi-agent pipeline with MCP-based tool integration, replacing a slow and inconsistent manual reading process.

@@ -1,6 +1,6 @@
 ---
 title: A hybrid-retrieval RAG assistant that removed half the human support load
-org: VASL
+org: Confidential
 role: AI Engineer
 period: 2022–2023
 summary: A multi-layered retrieval-augmented assistant with hybrid semantic and lexical routing, which halved inbound support tickets requiring a human and materially improved retrieval precision.

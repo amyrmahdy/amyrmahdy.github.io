@@ -27,14 +27,14 @@ export const CAREER: Post[] = [
   {
     period: "2023–2024",
     role: "Head of AI",
-    org: "VASL",
+    org: "Confidential",
     place: "Remote",
     chapter: 3,
   },
   {
     period: "2022–2023",
     role: "AI Engineer",
-    org: "VASL",
+    org: "Confidential",
     place: "Remote",
     chapter: 3,
   },

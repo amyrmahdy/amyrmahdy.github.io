@@ -20,7 +20,7 @@ const proof = defineCollection({
     title: z.string(),
     /** Named system, where one exists: "Oasis", "Cortex-Axon-Synapse". */
     codename: z.string().optional(),
-    org: z.enum(["Smartway Solutions", "Mistix AI", "VASL", "Freelance"]),
+    org: z.enum(["Smartway Solutions", "Mistix AI", "Confidential", "Freelance"]),
     role: z.string(),
     period: z.string(),
     /** Doubles as the meta description. */

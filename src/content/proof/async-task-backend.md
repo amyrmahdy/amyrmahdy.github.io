@@ -1,6 +1,6 @@
 ---
 title: An async backend holding 10,000 concurrent daily tasks at 99.9% uptime
-org: VASL
+org: Confidential
 role: AI Engineer
 period: 2022–2023
 summary: A Celery and Redis task backend that reliably absorbed upwards of ten thousand concurrent daily task requests, giving the AI services above it somewhere safe to fail.

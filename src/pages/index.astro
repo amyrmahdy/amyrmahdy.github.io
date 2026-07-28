@@ -1,690 +1,215 @@
 ---
-import { getCollection, getEntry } from "astro:content";
-import StoryLayout from "@layouts/StoryLayout.astro";
-import Chapter from "@components/story/Chapter.astro";
-import ProofRow from "@components/ProofRow.astro";
+import { getCollection } from "astro:content";
+import ShellLayout from "@layouts/ShellLayout.astro";
 import WaitlistForm from "@components/WaitlistForm.astro";
-import { byId } from "@lib/chapters";
-import { HARVEST_LOOP, HARVEST_PILLARS, HARVEST_TERMS } from "@lib/career";
+import Scene from "@components/scene/Scene";
 
-const pick = async (...ids: string[]) =>
-  (await Promise.all(ids.map((id) => getEntry("proof", id)))).filter(Boolean) as any[];
-
-const crustProof = await pick("elt-pipelines");
-const mantleProof = await pick(
-  "rag-support-chatbot",
-  "peft-quantization",
-  "llm-as-a-judge-evals",
-  "uscs-soil-classification",
-  "async-task-backend"
-);
-const stabilityProof = await pick("cortex-axon-synapse");
-const ascentProof = await pick("oasis", "fde-pods");
-
-const allProof = (await getCollection("proof")).sort(
-  (a, b) => a.data.order - b.data.order
-);
-
-const essays = (await getCollection("essays")).sort(
-  (a, b) => (a.data.flagship ? -1 : b.data.flagship ? 1 : 0)
-);
+const featured = (await getCollection("proof"))
+  .filter((p) => p.data.featured)
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 3);
 ---
 
-<StoryLayout>
-  <!-- ══ 1 · PREP ══════════════════════════════════════════════════════════
-       The anti-arrogance inoculation, and it goes first. "I am made of the same
-       material as everyone else" is the most disarming opening available to a
-       man with this CV. -->
-  <Chapter
-    chapter={byId("prep")}
-    visual="A single point of specular light above a flat graphite sheet in wireframe, its layers slipping past one another."
-  >
-    <p class="mono ident">
-      A. M. MADANI &middot; AI SOLUTIONS ARCHITECT<br />
-      CTO, SMARTWAY SOLUTIONS &middot; GERMANY &middot; EU
-    </p>
-
-    <p class="lead">
-      Graphite and diamond are the same element, atom for atom. One is worth
-      nothing.
-    </p>
-
-    <p>
-      The difference is how deep it went, how hard it was pressed, and how fast
-      it got out. Nothing about the material. Everything about the process.
-    </p>
-
-    <p>
-      I build privacy-first AI systems for European enterprises. This page is
-      the process, not the r&eacute;sum&eacute;.
-    </p>
-
-    <p class="cta-row">
-      <a href="#crust" class="cta">Begin the descent &darr;</a>
-      <a href="/dossier/" class="cta cta-quiet">Skip to the evidence &rarr;</a>
-    </p>
-  </Chapter>
-
-  <!-- ══ 2 · CRUST ═════════════════════════════════════════════════════════ -->
-  <Chapter
-    chapter={byId("crust")}
-    visual="Horizontal strata accumulating from above, each labelled with a year, as graphite sheets stack and their interlayer gaps close."
-  >
-    <p>
-      Mahalat, then Astrakhan. A B.Sc. in computer science, then a master&rsquo;s
-      in applied mathematics and informatics, and three years of freelance data
-      engineering in between and after &mdash; pipelines, ingestion, validation.
-      The unglamorous layer.
-    </p>
-
-    <p>
-      This is the part nobody puts on a conference slide. It is also the part
-      that decides everything above it. You cannot reason about a model&rsquo;s
-      output if you cannot vouch for what went into it, and vouching for what
-      went into it is months of work that looks like nothing.
-    </p>
-
-    <p>
-      <strong>Depth is not optional, and it is boring.</strong> Every layer of
-      crust has to be passed through at the speed the crust allows.
-    </p>
-
-    <div class="wide"><ProofRow entries={crustProof} /></div>
-
-    <p class="payload">
-      Most enterprise AI programmes fail in this layer. They start at the model.
-      The model is the last thing you choose.
-    </p>
-  </Chapter>
-
-  <!-- ══ 3 · MANTLE ════════════════════════════════════════════════════════ -->
-  <Chapter
-    chapter={byId("mantle")}
-    visual="Slow convection cells turning in the background as the palette warms; the stacked graphite sheets begin to buckle."
-  >
-    <p>
-      Two years at VASL, first as an AI engineer and then as head of AI. Retrieval
-      systems, async infrastructure, model compression, evaluation frameworks,
-      multi-agent pipelines for geotechnical classification. Volume, variety, and
-      not enough time.
-    </p>
-
-    <p>
-      Heat alone does not make anything valuable. Applied to carbon without
-      structure, it just burns. The years that look like raw thermal load only
-      become worth something if something holds their shape while the load is
-      applied.
-    </p>
-
-    <p>
-      What held was the <strong>Minimum Quality Floor</strong> &mdash; a bar
-      below which nothing ships, no matter how urgent. That sounds like a brake.
-      It is the opposite. A 60% cut in GPU spend is not frugality; it is the
-      discipline that made a 300% increase in deployment frequency survivable
-      rather than reckless.
-    </p>
-
-    <p>
-      Constraint is generative. Evals are what let you move fast without finding
-      out six weeks later that you moved fast in the wrong direction.
-    </p>
-
-    <div class="wide"><ProofRow entries={mantleProof} /></div>
-
-    <p class="payload">
-      If your team cannot tell you whether last week&rsquo;s change made the
-      system better, you do not have a velocity problem. You have an
-      instrumentation problem, and velocity is the symptom.
-    </p>
-  </Chapter>
-
-  <!-- ══ 4 · STABILITY FIELD ═══════════════════════════════════════════════
-       The pivot. The paragraph that describes the diamond stability field also
-       describes Cortex-Axon-Synapse: the architecture and the metaphor are the
-       same diagram. -->
-  <Chapter
-    chapter={byId("stability")}
-    visual="The vignette closing inward; buckled sheets collapse and snap into a first cubic cell."
-  >
-    <p>
-      Dubai. Lead forward deployed engineer and product architect at Mistix AI,
-      in the rooms where seven-figure decisions actually get made.
-    </p>
-
-    <p>
-      Below 150 kilometres there is a region where carbon has exactly one stable
-      arrangement. Above that line, the same atoms under the same heat relax back
-      into graphite. The pressure is not incidental to the diamond. It is the
-      only reason it exists.
-    </p>
-
-    <p>
-      What I built there has the same shape. <strong>Cortex</strong> plans,
-      <strong>Axon</strong> executes deterministically, <strong>Synapse</strong>
-      guards the boundary &mdash; three layers, each rigid, each bonded to the
-      next in a fixed relationship. Uncertainty is quarantined at the top where
-      it can be measured. Nothing below it is allowed to improvise.
-    </p>
-
-    <p>
-      That is <strong>Architect First</strong>: structure, interfaces and system
-      design determine speed, quality and reuse before a line ships. Get the
-      lattice right and onboarding the next enterprise stops being an engineering
-      project and becomes an integration one. The difference between those two
-      words is about nine weeks and a great deal of money.
-    </p>
-
-    <div class="wide"><ProofRow entries={stabilityProof} /></div>
-
-    <p class="payload">
-      Nobody signs a seven-figure contract because the demo was good. They sign
-      because the architecture told them what happens in month eighteen.
-    </p>
-  </Chapter>
-
-  <!-- ══ 5 · LATTICE ═══════════════════════════════════════════════════════
-       The intellectual centrepiece: a lattice is the same cell repeated, a
-       methodology is the same loop repeated. Capture A lands here, at the point
-       of maximum comprehension. -->
-  <Chapter
-    chapter={byId("lattice")}
-    visual="A diamond cubic lattice assembling cell by cell; each of the six loop stages illuminates one bond family."
-  >
-    <p>
-      Nature takes between one and three and a half billion years to do this,
-      because nature has no method. It has time instead.
-    </p>
-
-    <p>
-      A lattice is not complicated. It is one cell, repeated, with absolute
-      fidelity, until the repetition itself becomes the hardest natural substance
-      there is. Nothing in a diamond is clever. Everything in it is consistent.
-    </p>
-
-    <p>
-      <strong>The Harvest Methodology</strong> is the same claim about work: not
-      a smarter loop, the <em>same</em> loop, closed and repeated until the
-      repetition compounds.
-    </p>
-
-    <p class="loop mono">
-      {HARVEST_LOOP.join("  →  ")}
-    </p>
-
-    <dl class="pillars wide">
-      {
-        HARVEST_PILLARS.map((p) => (
-          <div>
-            <dt>{p.name}</dt>
-            <dd>{p.statement}</dd>
-          </div>
-        ))
-      }
-    </dl>
-
-    <p>
-      Bets are selected by <strong>ICE</strong> rather than by whoever argued
-      most persuasively. Work runs through customer-proximate{" "}
-      <strong>Deployment Pods</strong> with one owner each. Every delivery
-      contributes to a <strong>Backbone</strong> of reusable IP, which is the
-      only mechanism by which the second engagement is cheaper than the first.
-    </p>
-
-    <dl class="terms wide">
-      {
-        HARVEST_TERMS.map((t) => (
-          <div>
-            <dt class="mono">{t.term}</dt>
-            <dd>{t.def}</dd>
-          </div>
-        ))
-      }
-    </dl>
-
-    <p class="payload">
-      A method is what you use instead of time. If your organisation is waiting
-      to get good at AI, it is spending the one resource the geology does not
-      sell.
-    </p>
-
-    <WaitlistForm
-      placement="lattice"
-      eyebrow="// THE HARVEST FIELD CARD"
-      heading="The methodology on one page."
-      blurb="The loop, the ICE scoring sheet, and the Minimum Quality Floor checklist — one page, made to be printed and pinned to a wall."
-      button="Send the card"
-    />
-  </Chapter>
-
-  <!-- ══ 6 · KIMBERLITE ════════════════════════════════════════════════════
-       The most persuasive forty seconds on the site, because the claim is
-       counterintuitive and physics makes it irrefutable. -->
-  <Chapter
-    chapter={byId("ascent")}
-    visual="Every direction reverses; the lattice fractures into facets and the facets fly upward, then stop dead at the surface."
-  >
-    <p>
-      Germany. CTO at Smartway Solutions. Jira dismantled and replaced with an
-      embedded forward-deployed engineer model, pods framed under Harvest, Oasis
-      shipped, documentation cycles compressed tenfold.
-    </p>
-
-    <p>
-      Here is the part of the geology that nobody expects.
-    </p>
-
-    <p>
-      A diamond that forms at 190 kilometres and rises slowly does not arrive as
-      a diamond. It reverts. Graphite is the stable form at the surface, and a
-      leisurely ascent gives the carbon exactly the time it needs to relax back
-      into something worthless. The stones that survive are the ones carried up
-      in hours by a kimberlite eruption moving fast enough to outrun the
-      chemistry.
-    </p>
-
-    <p>
-      <strong>The violence of the extraction is what preserves the value created
-      under pressure.</strong> Speed is not the opposite of quality here. It is
-      the precondition for it.
-    </p>
-
-    <!-- The one interactive claim on the site: the reader's own scroll speed
-         decides which of these is true. With reduced motion or no JS both
-         panels show as a labelled diptych, and the argument survives verbatim. -->
-    <div class="assay wide" data-assay>
-      <figure class="assay-panel" data-panel="fast">
-        <figcaption class="mono">
-          <span class="assay-tag">FAST ASCENT</span>
-          <span class="assay-out">DIAMOND</span>
-        </figcaption>
-        <p>
-          Hours, not eons. The carbon reaches the surface still locked in the
-          arrangement that pressure gave it.
-        </p>
-      </figure>
-      <figure class="assay-panel" data-panel="slow">
-        <figcaption class="mono">
-          <span class="assay-tag">SLOW ASCENT</span>
-          <span class="assay-out assay-out-bad">GRAPHITE</span>
-        </figcaption>
-        <p>
-          Given time on the way up, the same atoms relax into the form that is
-          stable at the surface. Nothing was lost in transit. It simply stopped
-          being worth anything.
-        </p>
-      </figure>
-      <p class="assay-note mono" data-assay-note aria-live="polite"></p>
+<ShellLayout
+  pageTitle="A. M. Madani — AI Solutions Architect"
+  description="Privacy-first AI architecture for European enterprise. Creator of The Harvest Methodology."
+  schema="home"
+>
+  <!-- ── the stone ─────────────────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="stage">
+      <Scene client:load />
+      <!-- Shown until the canvas paints, and permanently on the static tier. -->
+      <div class="poster" aria-hidden="true"></div>
     </div>
 
-    <p>
-      That is <strong>Deliver First</strong>, and it is why 10x is a structural
-      claim rather than a boast. Value that takes eighteen months to surface is
-      not slow value. It is a different, cheaper substance wearing the same name.
-    </p>
-
-    <div class="wide"><ProofRow entries={ascentProof} /></div>
-
-    <p class="payload">
-      Every enterprise AI programme I have been handed was a slow ascent.
-      Eighteen months of planning produces a very well-documented lump of
-      graphite.
-    </p>
-  </Chapter>
-
-  <!-- ══ 7 · THE CUT ═══════════════════════════════════════════════════════
-       Deliberately biography-free. This is the chapter the CFO reads; it should
-       look like an instrument panel, not a hero section. -->
-  <Chapter
-    chapter={byId("cut")}
-    visual="One stone in flat line-work, each facet labelled with a delivered system, with prismatic edges appearing for the only time on the site."
-  >
-    <p class="lead">
-      Two stones of identical mass. One cut to the correct angles, one not. They
-      differ in value by an order of magnitude.
-    </p>
-
-    <p>
-      Diamond&rsquo;s critical angle is 24.4 degrees, which means light entering
-      the crown will only return to the eye if the pavilion is cut to send it
-      back. Miss the angle and the light passes straight through the bottom of
-      the stone and is gone. Same carbon, same weight, same clarity &mdash; and
-      most of the value on the floor, because of geometry.
-    </p>
-
-    <p>
-      Same models. Same data. Same headcount. The architecture decides whether
-      anything comes back out.
-    </p>
-
-    <div class="wide"><ProofRow entries={allProof} /></div>
-
-    <p class="mono grid-note">
-      Each row is individually linkable. Every number has a method note on its
-      own page &mdash; <a href="/dossier/">or take the whole argument flat</a>.
-    </p>
-
-    <p class="payload">
-      If two vendors quote you the same model and the same team size, you are not
-      choosing between capabilities. You are choosing between geometries, and
-      only one of them returns the light.
-    </p>
-  </Chapter>
-
-  <!-- ══ 8 · LANDING ═══════════════════════════════════════════════════════ -->
-  <Chapter
-    chapter={byId("landing")}
-    visual="The stone at rest. Nothing moves."
-  >
-    <p class="lead">
-      Everything extracted becomes reusable. That is the last step of the loop,
-      so it is the last chapter of the descent.
-    </p>
-
-    <section class="book" aria-labelledby="book-title">
-      <p class="eyebrow">// MANUSCRIPT &middot; IN PROGRESS</p>
-      <h3 class="book-title" id="book-title">Nothing Rare About Carbon</h3>
-      <p class="book-sub">
-        How pressure, speed and structure turn ordinary material into the most
-        valuable thing you can hold &mdash; and why every enterprise AI
-        programme fails on the way up.
+    <div class="hero-copy">
+      <p class="eyebrow">// A. M. MADANI</p>
+      <h1>Same carbon.</h1>
+      <p class="lead">
+        Graphite and diamond are the same element. Pressure, structure and speed
+        are the entire difference &mdash; in geology, and in what your engineering
+        organisation produces.
       </p>
-      <p>
-        The Harvest Methodology, told as the story of being forced to invent it.
-        Six years, four countries, $1.5M in delivered contracts, and one
-        operating system for teams that have to ship faster than they can plan.
-      </p>
-
-      <blockquote class="excerpt">
-        <p>
-          The first thing I understood about the mantle is that it does not
-          hurry, and it does not care. Pressure is not applied to carbon out of
-          any interest in what the carbon becomes. It is simply the condition of
-          being that far down.
-        </p>
-        <p>
-          I have watched a great many engineering organisations try to
-          manufacture that condition on purpose &mdash; the crunch, the war
-          room, the quarter where everyone is asked to care more. It never
-          produces diamonds. It produces exhausted people and a backlog with
-          more items in it than when the quarter started.
-        </p>
-        <p>
-          What the geology actually says is stranger and more useful. Pressure
-          without structure destroys. Structure without pressure never
-          consolidates. And both of them together, held for long enough, still
-          produce nothing anybody will ever see &mdash; unless the last step is
-          violent enough to bring it up before it reverts.
-        </p>
-        <p class="folio mono">&mdash; 041</p>
-      </blockquote>
-
-      <WaitlistForm
-        placement="book"
-        heading="Read the first chapter."
-        blurb="One letter when there is something worth the ink. No sequence, no funnel."
-        button="Request the first chapter"
-      />
-    </section>
-
-    <section class="writing" aria-labelledby="writing-title">
-      <p class="eyebrow">// WRITING</p>
-      <h3 id="writing-title">Field notes &amp; deep dives</h3>
-      <ul class="essays">
-        {
-          essays.map((e) => (
-            <li>
-              <a href={e.data.url} target="_blank" rel="noopener noreferrer">
-                <span class="e-title">{e.data.title}</span>
-                <span class="mono e-meta">
-                  {e.data.flagship && <span class="flag">FLAGSHIP</span>}
-                  <time datetime={e.data.date.toISOString()}>
-                    {e.data.date.toLocaleDateString("en-GB", {
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric",
-                    })}
-                  </time>
-                </span>
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </section>
-
-    <section class="contact" aria-labelledby="contact-title">
-      <p class="eyebrow">// CONTACT</p>
-      <h3 id="contact-title">One line is enough.</h3>
-      <p>
-        Tell me what is broken and what it costs you per month. If I am not the
-        right person I will say so in the first reply.
-      </p>
-      <p class="contact-line mono">
-        <a href="mailto:amyrmahdy1@gmail.com">amyrmahdy1@gmail.com</a>
-      </p>
-      <p class="mono outbound">
+      <p class="hero-links mono">
+        <a href="#proof">The evidence</a>
         <a href="/dossier/">Dossier</a>
-        <a href="/proof/">Proof</a>
-        <a href="https://amyrmahdy.medium.com" rel="noopener noreferrer">Medium</a>
-        <a href="https://github.com/amyrmahdy" rel="noopener noreferrer">GitHub</a>
+        <a href="mailto:amyrmahdy1@gmail.com">Talk</a>
       </p>
-    </section>
-  </Chapter>
-</StoryLayout>
+    </div>
+
+    <p class="scrim mono" aria-hidden="true">SCROLL</p>
+  </section>
+
+  <!-- ── three beats ───────────────────────────────────────────────────── -->
+  <section class="beats" id="proof">
+    <ol>
+      {
+        featured.map((p) => (
+          <li>
+            <a href={`/proof/${p.id}/`}>
+              <span class="beat-n mono">{p.data.metrics[0].value}</span>
+              <span class="beat-l">{p.data.metrics[0].label}</span>
+              <span class="beat-c mono">
+                {p.data.codename ?? p.data.title.slice(0, 40)}
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+    <p class="beats-more mono">
+      <a href="/proof/">Nine systems, every number with its method &rarr;</a>
+    </p>
+  </section>
+
+  <!-- ── one ask ───────────────────────────────────────────────────────── -->
+  <section class="ask">
+    <WaitlistForm
+      placement="book"
+      eyebrow="// THE HARVEST FIELD CARD"
+      heading="The methodology on one page."
+      blurb="The loop, the ICE sheet, the quality floor. One page, made to be pinned to a wall."
+      button="Send the card"
+    />
+  </section>
+</ShellLayout>
 
 <style>
-  .ident {
-    font-size: var(--t-micro);
-    letter-spacing: 0.2em;
-    color: var(--muted);
-    line-height: 2;
-    margin-bottom: 2.5rem;
+  /* ── hero ──────────────────────────────────────────────────────────── */
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: grid;
+    align-content: center;
+    padding: var(--gutter);
+    overflow: hidden;
   }
 
-  .cta-row { display: flex; flex-wrap: wrap; gap: 1.75rem; margin-top: 2.5rem; }
-  .cta {
-    font-family: var(--font-mono);
+  .stage {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+  .stage :global(canvas) {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  /* A quiet radial suggestion of the stone, so the first frame is never empty
+     and the static tier still looks composed. */
+  .poster {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(38% 38% at 58% 46%, color-mix(in oklab, var(--ice) 14%, transparent), transparent 70%),
+      radial-gradient(60% 50% at 50% 100%, color-mix(in oklab, var(--ember) 7%, transparent), transparent 70%);
+    transition: opacity 900ms var(--ease-mantle);
+  }
+  :global(html.gl-active) .poster { opacity: 0; }
+
+  .hero-copy {
+    position: relative;
+    z-index: 1;
+    max-width: 34rem;
+    /* Sits left of the stone rather than on top of it. */
+    margin-inline-end: auto;
+  }
+
+  h1 {
+    font-size: var(--t-monument);
+    margin-block: 0.75rem 1.25rem;
+  }
+  .lead { max-width: 30ch; }
+
+  .hero-links {
+    display: flex;
+    gap: 1.75rem;
+    margin-top: 2.25rem;
     font-size: var(--t-small);
     letter-spacing: 0.1em;
+  }
+  .hero-links a {
     color: var(--accent);
-    border-bottom: 1px solid color-mix(in oklab, var(--accent) 40%, transparent);
-    padding-bottom: 0.35rem;
-    transition: border-color var(--dur-quick) var(--ease-facet);
+    border-bottom: 1px solid color-mix(in oklab, var(--accent) 35%, transparent);
+    padding-bottom: 0.3rem;
   }
-  .cta:hover { border-color: var(--accent); }
-  .cta-quiet { color: var(--muted); border-bottom-color: var(--line); }
-  .cta-quiet:hover { color: var(--fg); }
+  .hero-links a:hover { border-color: var(--accent); }
 
-  .loop {
-    font-size: var(--t-small);
-    letter-spacing: 0.12em;
-    color: var(--accent);
-    margin-block: 2rem;
-    padding-block: 1rem;
-    border-block: 1px solid var(--line);
-  }
-
-  .pillars, .terms { display: grid; gap: 1.1rem; margin-block: 2rem; }
-  .pillars div, .terms div {
-    display: grid;
-    grid-template-columns: minmax(8rem, 11rem) 1fr;
-    gap: 1.5rem;
-  }
-  .pillars dt, .terms dt { font-weight: 600; color: var(--fg); }
-  .terms dt { color: var(--accent); font-size: var(--t-micro); letter-spacing: 0.12em; padding-top: 0.25rem; }
-  .pillars dd, .terms dd {
-    margin: 0;
+  .scrim {
+    position: absolute;
+    left: var(--gutter);
+    bottom: 1.75rem;
+    z-index: 1;
+    font-size: var(--t-micro);
+    letter-spacing: 0.34em;
     color: var(--muted);
-    font-size: var(--t-small);
-    line-height: 1.6;
+    opacity: 0.6;
   }
 
-  /* ── the assay (chapter 6) ──────────────────────────────────────────── */
-  .assay {
+  /* ── beats ─────────────────────────────────────────────────────────── */
+  .beats {
+    max-width: var(--w-wide);
+    margin-inline: auto;
+    padding: clamp(4rem, 12vh, 7rem) var(--gutter);
+  }
+  .beats ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
     gap: 1px;
     background: var(--line);
     border: 1px solid var(--line);
-    margin-block: 2.5rem 0;
   }
-  .assay-panel {
+  .beats a {
+    display: block;
     background: var(--bg);
-    margin: 0;
-    padding: 1.5rem 1.35rem;
-    transition:
-      opacity var(--dur-erupt) var(--ease-erupt),
-      filter var(--dur-erupt) var(--ease-erupt);
+    padding: 2rem 1.5rem;
+    height: 100%;
+    transition: background-color var(--dur-quick) var(--ease-facet);
   }
-  .assay-panel figcaption {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    align-items: baseline;
+  .beats a:hover { background: var(--surface); color: inherit; }
+
+  .beat-n {
+    display: block;
+    font-size: var(--t-h2);
+    font-weight: 500;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .beat-l {
+    display: block;
+    margin-top: 0.7rem;
+    font-size: var(--t-small);
+    color: var(--fg);
+    line-height: 1.4;
+  }
+  .beat-c {
+    display: block;
+    margin-top: 1rem;
     font-size: var(--t-micro);
     letter-spacing: 0.16em;
-  }
-  .assay-tag { color: var(--muted); }
-  .assay-out { color: var(--accent); font-weight: 500; }
-  .assay-out-bad { color: var(--muted); }
-  .assay-panel p {
-    margin: 0.85rem 0 0;
-    font-size: var(--t-small);
-    line-height: 1.6;
-    color: var(--muted);
-  }
-  .assay-note {
-    grid-column: 1 / -1;
-    background: var(--bg);
-    margin: 0;
-    padding: 0.9rem 1.35rem;
-    font-size: var(--t-micro);
-    letter-spacing: 0.08em;
-    color: var(--muted);
-    min-height: 1.2em;
-  }
-
-  /* Default (no JS, reduced motion): both panels equal — a labelled diptych
-     that states the claim without needing to be operated. */
-  [data-assay] .assay-panel { opacity: 1; }
-
-  /* Live: whichever outcome the reader is currently earning is the lit one.
-     The state attribute lives on [data-assay] rather than on the chapter
-     <section>, because that section is rendered by Chapter.astro and so does
-     not carry this component's scope id — an ancestor selector would be scoped
-     to a cid the element never has, and would silently never match. */
-  [data-assay][data-ascent="fast"] .assay-panel[data-panel="slow"],
-  [data-assay][data-ascent="slow"] .assay-panel[data-panel="fast"] {
-    opacity: 0.32;
-    filter: saturate(0.4);
-  }
-  [data-assay][data-ascent="slow"] .assay-panel[data-panel="slow"] {
-    box-shadow: inset 2px 0 0 var(--muted);
-  }
-  [data-assay][data-ascent="fast"] .assay-panel[data-panel="fast"] {
-    box-shadow: inset 2px 0 0 var(--accent);
-  }
-
-  @media (max-width: 640px) {
-    .assay { grid-template-columns: 1fr; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .assay-panel { opacity: 1 !important; filter: none !important; }
-  }
-
-  .grid-note {
-    margin-top: 1.25rem;
-    font-size: var(--t-micro);
-    color: var(--muted);
-    line-height: 1.7;
-  }
-  .grid-note a { color: var(--accent); border-bottom: 1px solid var(--line); }
-
-  /* ── chapter 8 sections ─────────────────────────────────────────────── */
-  .book, .writing, .contact {
-    margin-top: 4rem;
-    padding-top: 2.5rem;
-    border-top: 1px solid var(--line);
-  }
-  .book-title { font-size: var(--t-h2); margin-block: 0.9rem 0.75rem; }
-  .book-sub {
-    font-size: var(--t-lead);
-    line-height: var(--lh-lead);
-    color: var(--fg);
-    max-width: 54ch;
-    margin-bottom: 1.5rem;
-  }
-
-  /* The text, not a 3D cover render. Only trade paperbacks need a mockup;
-     the excerpt is the only thing that proves he can write. */
-  .excerpt {
-    margin: 2.5rem 0 0;
-    padding: 2rem 0 0;
-    border-top: 1px solid var(--line);
-    max-width: 62ch;
-  }
-  .excerpt p { margin-block: 0 1.1em; }
-  .excerpt p:first-of-type::first-letter {
-    float: left;
-    font-family: var(--font-display);
-    font-size: 3.4em;
-    line-height: 0.82;
-    padding: 0.06em 0.1em 0 0;
-    color: var(--accent);
-  }
-  .folio {
-    font-size: var(--t-micro);
-    letter-spacing: 0.2em;
-    color: var(--muted);
-    margin-top: 1.5rem !important;
-  }
-
-  .essays { list-style: none; margin: 1.75rem 0 0; padding: 0; }
-  .essays li { border-bottom: 1px solid var(--line); }
-  .essays li:first-child { border-top: 1px solid var(--line); }
-  .essays a {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 1.5rem;
-    padding-block: 1rem;
-  }
-  .essays a:hover { color: var(--accent); }
-  .e-title { font-size: var(--t-small); line-height: 1.45; }
-  .e-meta {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    flex-shrink: 0;
-    font-size: var(--t-micro);
-    color: var(--muted);
-  }
-  .flag {
-    border: 1px solid var(--line);
-    padding: 0.15rem 0.4rem;
-    letter-spacing: 0.14em;
-    color: var(--accent);
-  }
-
-  .contact h3 { font-size: var(--t-h3); margin-block: 0.9rem 0.75rem; }
-  .contact-line { margin-top: 1.5rem; font-size: var(--t-lead); }
-  .contact-line a { color: var(--accent); border-bottom: 1px solid var(--line); }
-  .outbound {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.5rem;
-    margin-top: 2rem;
-    font-size: var(--t-micro);
-    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--muted);
   }
-  .outbound a { border-bottom: 1px solid var(--line); }
-  .outbound a:hover { color: var(--accent); }
 
-  @media (max-width: 640px) {
-    .pillars div, .terms div { grid-template-columns: 1fr; gap: 0.35rem; }
-    .essays a { flex-direction: column; gap: 0.4rem; }
+  .beats-more { margin-top: 1.5rem; font-size: var(--t-micro); letter-spacing: 0.1em; }
+  .beats-more a { color: var(--muted); }
+  .beats-more a:hover { color: var(--accent); }
+
+  /* ── ask ───────────────────────────────────────────────────────────── */
+  .ask {
+    max-width: var(--w-text);
+    margin-inline: auto;
+    padding: 0 var(--gutter) clamp(5rem, 14vh, 8rem);
+  }
+
+  @media (max-width: 900px) {
+    .hero { align-content: end; padding-bottom: 5rem; }
+    .hero-copy { max-width: none; }
+    .lead { max-width: 40ch; }
   }
 </style>

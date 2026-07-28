@@ -1,6 +1,6 @@
 ---
 title: An LLM-as-a-Judge eval framework that tripled deployment frequency
-org: VASL
+org: Confidential
 role: Head of AI
 period: 2023–2024
 summary: Instituted continuous automated evaluation of model outputs, replacing ad-hoc manual review as the release gate and increasing how often the team could safely ship.
