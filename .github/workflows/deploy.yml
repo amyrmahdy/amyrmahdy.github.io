@@ -18,9 +18,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      # Astro 7 declares engines.node >= 22.12.0. On Node 20 the `prepare`
+      # script (astro sync) fails during `npm ci`, so the install dies before
+      # the build is even attempted.
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - run: npm ci
