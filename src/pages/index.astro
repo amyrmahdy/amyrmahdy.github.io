@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import ShellLayout from "@layouts/ShellLayout.astro";
 import WaitlistForm from "@components/WaitlistForm.astro";
 import Scene from "@components/scene/Scene";
+import Cursor from "@components/Cursor.astro";
 
 const featured = (await getCollection("proof"))
   .filter((p) => p.data.featured)
@@ -21,6 +22,7 @@ const featured = (await getCollection("proof"))
     <Scene client:load />
     <div class="poster" aria-hidden="true"></div>
   </div>
+  <Cursor />
 
   <!-- ACT I ─ the reveal ────────────────────────────────────────────────── -->
   <section class="act act-1">
@@ -36,7 +38,11 @@ const featured = (await getCollection("proof"))
       <a href="/dossier/">Dossier</a>
       <a href="mailto:amyrmahdy1@gmail.com">Talk</a>
     </p>
-    <p class="cue mono" aria-hidden="true">SCROLL &mdash; WATCH</p>
+    <p class="cue mono">
+      <span>DRAG TO TURN</span>
+      <span>MOVE TO DISTURB</span>
+      <span>SCROLL TO REVEAL</span>
+    </p>
   </section>
 
   <!-- ACT II ─ the divide ───────────────────────────────────────────────── -->
@@ -133,11 +139,40 @@ const featured = (await getCollection("proof"))
   .links a:hover { border-color: var(--accent); }
 
   .cue {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
     margin-top: 4rem;
     font-size: var(--t-micro);
-    letter-spacing: 0.34em;
+    letter-spacing: 0.22em;
     color: var(--muted);
-    opacity: 0.55;
+  }
+  .cue span {
+    position: relative;
+    padding-left: 1.1rem;
+    opacity: 0;
+    animation: cue-in 700ms var(--ease-facet) forwards;
+  }
+  /* Staggered so they read as instructions arriving, not as a legend. */
+  .cue span:nth-child(1) { animation-delay: 1.6s; }
+  .cue span:nth-child(2) { animation-delay: 1.9s; }
+  .cue span:nth-child(3) { animation-delay: 2.2s; }
+  .cue span::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.42em;
+    width: 5px;
+    height: 5px;
+    border: 1px solid var(--accent);
+    transform: rotate(45deg);
+  }
+  @keyframes cue-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 0.75; transform: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cue span { animation: none; opacity: 0.75; }
   }
 
   /* ── act II ─────────────────────────────────────────────────────────── */

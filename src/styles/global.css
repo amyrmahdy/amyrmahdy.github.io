@@ -330,3 +330,31 @@ a:hover { color: var(--accent); }
 @media (prefers-reduced-transparency: reduce) {
   .legible { backdrop-filter: none; background: var(--bg); }
 }
+
+/* ═══ interaction ══════════════════════════════════════════════════════════ */
+
+/* The custom ring replaces the native arrow, but only once it is actually
+   tracking — otherwise a slow-loading page shows no cursor at all. */
+html.cursor-live,
+html.cursor-live * {
+  cursor: none;
+}
+
+/* Dragging the world must not select the copy sitting on top of it. */
+html.is-dragging,
+html.is-dragging * {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Text and links always win over the canvas underneath. */
+html.gl-active .act > * {
+  position: relative;
+}
+
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
+  html.cursor-live,
+  html.cursor-live * {
+    cursor: auto;
+  }
+}

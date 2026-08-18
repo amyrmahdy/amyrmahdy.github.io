@@ -1,0 +1,124 @@
+---
+/**
+ * A ring that follows the pointer and reacts to what is under it.
+ *
+ * This is the only UI chrome on the page, and it exists to answer one question
+ * the visitor would otherwise never ask: can I touch this? It grows on links,
+ * contracts and fills while dragging. Pointer-events are never intercepted.
+ *
+ * Fine pointers only, and never under reduced motion.
+ */
+---
+
+<div class="cursor" data-cursor aria-hidden="true">
+  <span class="ring"></span>
+  <span class="dot"></span>
+</div>
+
+<style>
+  .cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 90;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 400ms var(--ease-facet);
+    will-change: transform;
+  }
+  :global(html.cursor-live) .cursor { opacity: 1; }
+
+  .ring,
+  .dot {
+    position: absolute;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition:
+      width 260ms var(--ease-facet),
+      height 260ms var(--ease-facet),
+      background-color 260ms var(--ease-facet),
+      border-color 260ms var(--ease-facet);
+  }
+
+  .ring {
+    width: 34px;
+    height: 34px;
+    border: 1px solid color-mix(in oklab, var(--accent) 55%, transparent);
+  }
+  .dot {
+    width: 3px;
+    height: 3px;
+    background: var(--accent);
+  }
+
+  /* Over something clickable: open up and get out of the way of the label. */
+  :global(html.cursor-link) .ring {
+    width: 58px;
+    height: 58px;
+    border-color: var(--accent);
+    background: color-mix(in oklab, var(--accent) 8%, transparent);
+  }
+  :global(html.cursor-link) .dot { width: 0; height: 0; }
+
+  /* Gripping the world. */
+  :global(html.is-dragging) .ring {
+    width: 22px;
+    height: 22px;
+    background: color-mix(in oklab, var(--accent) 22%, transparent);
+    border-color: var(--accent);
+  }
+
+  @media (pointer: coarse), (prefers-reduced-motion: reduce) {
+    .cursor { display: none !important; }
+  }
+</style>
+
+<script>
+  const el = document.querySelector<HTMLElement>("[data-cursor]");
+  const root = document.documentElement;
+  const fine = matchMedia("(pointer: fine)").matches;
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (el && fine && !still) {
+    let x = innerWidth / 2;
+    let y = innerHeight / 2;
+    let cx = x;
+    let cy = y;
+    let raf = 0;
+
+    const loop = () => {
+      // Trails slightly behind the real pointer. The lag is what makes it read
+      // as a physical object rather than a repainted cursor.
+      cx += (x - cx) * 0.22;
+      cy += (y - cy) * 0.22;
+      el.style.transform = `translate3d(${cx}px, ${cy}px, 0)`;
+      raf = requestAnimationFrame(loop);
+    };
+
+    addEventListener(
+      "pointermove",
+      (e) => {
+        x = e.clientX;
+        y = e.clientY;
+        if (!root.classList.contains("cursor-live")) {
+          cx = x;
+          cy = y;
+          root.classList.add("cursor-live");
+        }
+        root.classList.toggle(
+          "cursor-link",
+          !!(e.target as HTMLElement)?.closest("a, button, input, label")
+        );
+      },
+      { passive: true }
+    );
+
+    document.addEventListener("pointerleave", () => root.classList.remove("cursor-live"));
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) cancelAnimationFrame(raf);
+      else raf = requestAnimationFrame(loop);
+    });
+
+    raf = requestAnimationFrame(loop);
+  }
+</script>

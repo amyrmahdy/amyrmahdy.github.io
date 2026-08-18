@@ -5,73 +5,86 @@ import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
 import { Stone } from "./Stone";
 import { Sparks } from "./Sparks";
+import { Starfield } from "./Starfield";
 import { Wand } from "./Wand";
 import { useScrollProgress } from "@lib/useScrollProgress";
 import { acts, damp, smoothstep, wandPose, type Acts } from "@lib/choreography";
+import { POINTER, decayPointer, initPointer } from "@lib/pointer";
 
 /**
- * Three tricks, driven by the page scroll.
+ * Chaos → discovery → control → understanding.
  *
- *   I   THE REVEAL   the wand sweeps, the dust gathers, a stone appears
+ * On arrival the field is wide and turbulent and the wand is not yet in frame.
+ * It sweeps in, and from then on scroll drives three tricks while the pointer
+ * disturbs the material and dragging turns the whole world. The user is never
+ * only watching.
+ *
+ *   I   THE REVEAL   the wand rises, dust gathers, a stone appears
  *   II  THE DIVIDE   the wand taps, one stone becomes three
- *   III THE VANISH   the wand sweeps back, everything returns to dust
+ *   III THE VANISH   the wand sweeps out, the dust scatters
  */
 function Act({
   actsRef,
   tipRef,
+  introRef,
   progress,
 }: {
   actsRef: React.RefObject<Acts>;
   tipRef: React.RefObject<THREE.Vector3>;
+  introRef: React.RefObject<number>;
   progress: React.RefObject<number>;
 }) {
+  const orbit = useRef<THREE.Group>(null!);
   const wand = useRef<THREE.Group>(null!);
   const smooth = useRef(0);
-  const pointer = useRef({ x: 0, y: 0 });
   const worldTip = useMemo(() => new THREE.Vector3(), []);
-
-  useEffect(() => {
-    const onMove = (e: PointerEvent) => {
-      pointer.current.x = (e.clientX / window.innerWidth) * 2 - 1;
-      pointer.current.y = (e.clientY / window.innerHeight) * 2 - 1;
-    };
-    window.addEventListener("pointermove", onMove, { passive: true });
-    return () => window.removeEventListener("pointermove", onMove);
-  }, []);
 
   useFrame((state, dt) => {
     const d = Math.min(dt, 1 / 30);
-    // Smooths the animation's pursuit of scroll without touching scroll itself.
+    decayPointer(d);
+
+    // Arrival ramp, independent of scroll: chaos first, then the wand.
+    introRef.current = Math.min(1, (introRef.current ?? 0) + d / 2.4);
+    const arrival = smoothstep(introRef.current);
+
+    // Smooths the animation's pursuit of scroll, never the scroll itself.
     smooth.current = damp(smooth.current, progress.current ?? 0, 6, d);
     const p = smooth.current;
     const a = acts(p);
     actsRef.current = a;
 
     const t = state.clock.elapsedTime;
-    const g = wand.current;
 
-    // One continuous gesture, read as three tricks. Pure function of scroll —
-    // see lib/choreography.ts, which is unit-tested.
+    // Drag turns the world. This is the moment the user learns they have hands.
+    orbit.current.rotation.y = damp(orbit.current.rotation.y, POINTER.orbitY, 5, d);
+    orbit.current.rotation.x = damp(orbit.current.rotation.x, POINTER.orbitX, 5, d);
+
+    // One continuous gesture read as three tricks; pure function of scroll,
+    // see lib/choreography.ts. The wand flies in from off-frame on arrival.
     const pose = wandPose(p, Math.sin(t * 0.9) * 0.05);
-    g.position.set(pose.x, pose.y, pose.z);
-    g.rotation.z = pose.rz;
+    const g = wand.current;
+    g.position.set(pose.x - (1 - arrival) * 4.5, pose.y - (1 - arrival) * 2.2, pose.z);
+    g.rotation.z = pose.rz + (1 - arrival) * 1.1;
     g.rotation.x = Math.sin(t * 0.7) * 0.06;
+    g.scale.setScalar(arrival);
 
-    // World position of the glowing tip, for the sparks to chase.
     worldTip.set(0, 1.2, 0);
     g.localToWorld(worldTip);
     tipRef.current?.copy(worldTip);
 
-    // Damped pointer parallax on the camera.
+    // Damped pointer parallax, and a pull-back so the trio stays framed.
     const cam = state.camera;
-    cam.position.x = damp(cam.position.x, pointer.current.x * 0.55, 3, d);
-    cam.position.y = damp(cam.position.y, -pointer.current.y * 0.32, 3, d);
-    // Pulls back a touch as the stones spread so the trio stays framed.
+    cam.position.x = damp(cam.position.x, POINTER.nx * 0.5, 3, d);
+    cam.position.y = damp(cam.position.y, -POINTER.ny * 0.3, 3, d);
     cam.position.z = damp(cam.position.z, 5.1 + smoothstep(a.split) * 1.5, 3, d);
     cam.lookAt(0, 0, 0);
   });
 
-  return <Wand ref={wand} />;
+  return (
+    <group ref={orbit}>
+      <Wand ref={wand} />
+    </group>
+  );
 }
 
 function useAllowed() {
@@ -101,6 +114,7 @@ export default function Scene() {
   const progress = useScrollProgress();
   const actsRef = useRef<Acts>({ reveal: 0, split: 0, vanish: 0 });
   const tipRef = useRef(new THREE.Vector3());
+  const introRef = useRef(0);
   const [lowPower, setLowPower] = useState(false);
 
   useEffect(() => {
@@ -109,6 +123,11 @@ export default function Scene() {
         (navigator.hardwareConcurrency ?? 8) <= 4
     );
   }, []);
+
+  useEffect(() => {
+    if (!allowed) return;
+    return initPointer();
+  }, [allowed]);
 
   if (!allowed) return null;
 
@@ -128,8 +147,9 @@ export default function Scene() {
         document.documentElement.classList.add("gl-active");
       }}
     >
-      <Act actsRef={actsRef} tipRef={tipRef} progress={progress} />
-      <Sparks count={lowPower ? 240 : 460} actsRef={actsRef} tip={tipRef} />
+      <Starfield count={lowPower ? 600 : 1400} />
+      <Act actsRef={actsRef} tipRef={tipRef} introRef={introRef} progress={progress} />
+      <Sparks count={lowPower ? 240 : 460} actsRef={actsRef} tip={tipRef} intro={introRef} />
       <Stone actsRef={actsRef} lowPower={lowPower} />
 
       {/* Small, intensely bright sources: dispersion is invisible against a
