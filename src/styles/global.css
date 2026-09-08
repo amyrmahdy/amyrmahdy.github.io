@@ -2,9 +2,10 @@
 @import "./fonts.css";
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   THE PODIUM — design system
-   Colour tracks the three movements: cold at the first, neutral at the
-   second, warm at the third. Colour is narrative here, not decoration.
+   DIAMOND — design system
+   Carbon and diamond are the same element. The palette descends with the
+   reader: cold daylight drains to neutral, incandescence builds at depth, then
+   daylight returns. Colour is narrative here, not decoration.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 /* Registered so they can be interpolated by a scroll timeline. Unregistered
@@ -34,8 +35,9 @@
   --ice: #eef9fd;
   --ember: #ff9b50;
 
-  /* Kept for WaitlistForm's error state; the landing and proof pages may not
-     reference these. */
+  /* Dispersion. Appears once, in chapter 7, as 1px facet edges. These never
+     carry text, state, or meaning — break that and the site becomes a gradient
+     startup page. Seven chapters of monochrome are what make them expensive. */
   --fire-violet: #9964e5;
   --fire-blue: #4ba3f7;
   --fire-cyan: #5ed9e6;
@@ -112,13 +114,19 @@
   --font-mono: var(--font-mono);
 }
 
-/* ═══ movement states ══════════════════════════════════════════════════════
-   Set by the scene on <html data-mv="1|2|3">. Movement 1 is the :root
-   default (cold). Hue passes *through zero chroma* — cold drains to neutral,
-   then warms. Interpolating around the wheel would pass through magenta.   */
+/* ═══ depth states ═════════════════════════════════════════════════════════
+   Set by IntersectionObserver on <html data-ch>. Hue rotates *through zero
+   chroma* — colour leaves as daylight does, then returns as incandescence.
+   Interpolating 250° → 42° around the wheel would pass through magenta.       */
 
-html[data-mv="2"] { --bg:#08090a; --surface:#131416; --line:#323438; --muted:#9b9da0; }
-html[data-mv="3"] { --bg:#0b0a09; --surface:#16120f; --line:#38312c; --muted:#a29a94; --fg:#f3efec; }
+html[data-ch="1"] { --bg:#080c0f; --surface:#12171c; --line:#303840; --muted:#989fa7; --fg:#f0f4f8; --accent:var(--ice); }
+html[data-ch="2"] { --bg:#08090a; --surface:#131416; --line:#323438; --muted:#9b9da0; --fg:#f0f1f3; --accent:var(--ice); }
+html[data-ch="3"] { --bg:#0a0605; --surface:#160f0d; --line:#392e2b; --muted:#a39995; --fg:#f3eeec; --accent:var(--ember); }
+html[data-ch="4"] { --bg:#0a0302; --surface:#170a06; --line:#3d281f; --muted:#aa958d; --fg:#f6eae6; --accent:var(--ember); }
+html[data-ch="5"] { --bg:#090402; --surface:#160c09; --line:#3b2a24; --muted:#a69690; --fg:#f4ebe8; --accent:var(--ember); }
+html[data-ch="6"] { --bg:#0a0707; --surface:#161111; --line:#383130; --muted:#a29a99; --fg:#f3efef; --accent:var(--ice); }
+html[data-ch="7"] { --bg:#080b0e; --surface:#13161b; --line:#31373e; --muted:#999fa5; --fg:#f0f3f7; --accent:var(--ice); }
+html[data-ch="8"] { --bg:#080c0f; --surface:#12171c; --line:#303840; --muted:#989fa7; --fg:#f0f4f8; --accent:var(--ice); }
 
 html {
   transition:
@@ -127,6 +135,13 @@ html {
     --line var(--dur-token) var(--ease-mantle),
     --muted var(--dur-token) var(--ease-mantle),
     --fg var(--dur-token) var(--ease-mantle);
+}
+
+/* Chapter 4 compresses the layout itself: pressure as a typographic fact
+   rather than an illustration of one. */
+html[data-ch="4"] {
+  --track-body: -0.004em;
+  --w-text: min(36rem, 100% - var(--gutter) * 2);
 }
 
 /* ═══ base ═════════════════════════════════════════════════════════════════ */

@@ -1,10 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <!-- The mark: a baton and the path of one downbeat. At rest in the final
-       frame of the page the baton sits at exactly this angle. -->
-  <!-- shaft: 5.7 wide at the hand, under 1 at the tip, rising 45° up-right -->
-  <polygon points="29,71 33,67 85.4,13.4 86,14" fill="#eef9fd" />
-  <!-- bulb: the cork handle, continuing the shaft down-left -->
-  <ellipse cx="23" cy="77" rx="6" ry="9" transform="rotate(-45 23 77)" fill="#eef9fd" fill-opacity="0.55" />
-  <!-- ictus: the downbeat's path from the tip, out and back -->
-  <path d="M86,14 C86,36 84,48 74,50 C67,51 64,44 69,40" fill="none" stroke="#eef9fd" stroke-width="1.6" stroke-linecap="round" opacity="0.6" />
+  <!-- The wand: dark rod, bright ferrules, a spark at the working tip. -->
+  <g stroke="#eef9fd" stroke-linecap="round">
+    <line x1="26" y1="78" x2="64" y2="40" stroke-width="9" opacity="0.55" />
+    <line x1="22" y1="82" x2="30" y2="74" stroke-width="13" />
+  </g>
+  <!-- four-point spark -->
+  <path
+    d="M72 32 L76.5 43.5 L88 48 L76.5 52.5 L72 64 L67.5 52.5 L56 48 L67.5 43.5 Z"
+    fill="#eef9fd"
+  />
 </svg>
