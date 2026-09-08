@@ -111,10 +111,14 @@ void main() {
     ? 0.0
     : smoothstep(0.0, 1.0, clamp((uReleaseR - aRadius) / LOCK_W, 0.0, 1.0));
 
-  int k = int(aThird + 0.5);
-  vEmber = uEmber[k];
-  vLit = uLit[k];
-  vHover = uHover[k];
+  // Component select rather than uEmber[k]: dynamic vector indexing is legal
+  // GLSL but it is the construct most likely to be mistranslated, and ember
+  // never appeared on the left third under one rasteriser. This is free.
+  float k1 = step(0.5, aThird);
+  float k2 = step(1.5, aThird);
+  vEmber = mix(mix(uEmber.x, uEmber.y, k1), uEmber.z, k2);
+  vLit   = mix(mix(uLit.x,   uLit.y,   k1), uLit.z,   k2);
+  vHover = mix(mix(uHover.x, uHover.y, k1), uHover.z, k2);
 }
 `;
 
@@ -199,7 +203,7 @@ export function Orchestra({
 }) {
   const players = useRef<THREE.InstancedMesh>(null!);
   const mirror = useRef<THREE.InstancedMesh>(null!);
-  const floorMat = useRef<THREE.MeshStandardMaterial>(null!);
+  const floorMat = useRef<THREE.MeshLambertMaterial>(null!);
 
   const built = useMemo(() => {
     const list = seats(lowPower);
@@ -287,6 +291,10 @@ export function Orchestra({
     const mirrorMaterial = new THREE.ShaderMaterial({
       ...materialOpts,
       uniforms: mirrorUniforms,
+      // The mirrored quads sit below y=0 and the opaque floor at y=0 would
+      // win the depth test every time — the reflection never showed. Ignore
+      // depth for this pass; it is additive, faint, and fades with distance.
+      depthTest: false,
     });
     mirrorMaterial.toneMapped = false;
 
@@ -405,15 +413,20 @@ export function Orchestra({
           ref={mirror}
           args={[built.geometry, built.mirrorMaterial, built.n]}
           frustumCulled={false}
+          renderOrder={1}
         />
       )}
       <mesh rotation-x={-Math.PI / 2} position={[0, 0, 0]}>
         <planeGeometry args={[60, 60]} />
-        <meshStandardMaterial
+        {/* Matte on purpose. A standard material at roughness 0.55 reflected
+            drei's Environment at grazing angles and washed the whole lower
+            frame mid-grey — brighter with distance, the Fresnel signature. A
+            Lambert floor has no specular: lit by the baton's tip pool and the
+            hall light only. */}
+        <meshLambertMaterial
           ref={floorMat}
           color="#05070a"
-          roughness={0.55}
-          metalness={0}
+          envMapIntensity={0}
           emissive="#ff9b50"
           emissiveIntensity={0}
         />

@@ -156,9 +156,20 @@ const featured = (await getCollection("proof"))
   .act-3 { max-width: var(--w-text); }
 
   h1 {
-    font-size: var(--t-monument);
-    margin-block: 1rem 1.5rem;
+    /* Below the monument scale on purpose. At 160px the three-line headline
+       plus the lead pushed the links and the three cue labels below the fold
+       at 1440x900 — and the cues are the affordance for every interaction on
+       the page. 100px wraps to two lines and the whole first act fits. */
+    font-size: clamp(3rem, 1.5rem + 5.5vw, 6.25rem);
+    margin-block: 1rem 1.25rem;
   }
+  /* The headline needs more than the reading column: inside 32rem the monument
+     wraps "Everyone / is / already / seated." with a one-word line. The first
+     act's column widens to 52rem so it breaks "Everyone is / already seated.",
+     and everything except the h1 stays at 32rem. A child cannot exceed its
+     parent's max-width, so the h1 alone could not have done this. */
+  .act-1 .copy { max-width: 52rem; }
+  .act-1 .copy > :not(h1) { max-width: 32rem; }
   .lead { max-width: 34ch; color: var(--muted); }
 
   .links {

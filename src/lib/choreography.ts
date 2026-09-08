@@ -267,7 +267,10 @@ export const PIVOT = [0.42, -0.38, -1.1] as const;
 export const PIVOT_REST = [-0.34, -0.4, -1.0] as const;
 export const DIR_DOWN = [0, -1, 0] as const;
 export const DIR_RAISED = norm3([0, 0.62, -0.78]);
-export const DIR_DEFAULT = norm3([-0.085, -0.045, -0.995]);
+/** Resting direction after the ictus. Tip up ~17° and slightly left: still
+ *  addressing the room, but with visible shaft. Pointing dead ahead was seen
+ *  end-on from first person and the baton vanished to a sliver. */
+export const DIR_DEFAULT = norm3([-0.18, 0.28, -0.94]);
 export const DIR_REST = norm3([0.7071, 0.7071, 0]);
 
 /** 14° tip-down over 120 ms, rebound by 320 ms. */

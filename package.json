@@ -12,7 +12,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "prepare": "astro sync",
-    "test": "node --test src/lib/*.test.ts"
+    "test": "node --test src/lib/*.test.ts",
+    "verify": "node scripts/verify-dist.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.3",

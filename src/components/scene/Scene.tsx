@@ -266,7 +266,10 @@ function DevCompile() {
     if (!import.meta.env.DEV) return;
     try {
       gl.compile(scene, camera);
-      (window as unknown as { __compiled?: number }).__compiled = gl.info.programs?.length ?? 0;
+      const w = window as unknown as { __compiled?: number; __scene?: unknown };
+      w.__compiled = gl.info.programs?.length ?? 0;
+      // For the headless driver: inspect materials, hide objects, read stats.
+      w.__scene = { scene, gl, camera };
     } catch (e) {
       console.error("[scene] compile failed", e);
     }
@@ -282,9 +285,13 @@ function useAllowed() {
       localStorage.getItem("amm:reduce-motion") === "1";
     if (reduced) return;
     if ((navigator as unknown as { connection?: { saveData?: boolean } }).connection?.saveData) return;
+    // DEV-only: `?gl=soft` lets a software rasteriser through the gate so a
+    // headless browser can compile the shaders and paint the scene for
+    // verification. Production always refuses a major performance caveat.
+    const soft = import.meta.env.DEV && new URLSearchParams(location.search).has("gl");
     try {
       const c = document.createElement("canvas");
-      const gl = c.getContext("webgl2", { failIfMajorPerformanceCaveat: true });
+      const gl = c.getContext("webgl2", { failIfMajorPerformanceCaveat: !soft });
       if (!gl) return;
       gl.getExtension("WEBGL_lose_context")?.loseContext();
     } catch {
