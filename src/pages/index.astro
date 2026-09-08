@@ -16,67 +16,88 @@ const featured = (await getCollection("proof"))
   description="Privacy-first AI architecture for European enterprise. Creator of The Harvest Methodology."
   schema="home"
 >
-  <!-- Fixed, so the three tricks play out across the whole scroll rather than
-       sliding off with the first screen. -->
+  <!-- Fixed, so the three movements play out across the whole scroll rather
+       than sliding off with the first screen. The scene renders its own
+       sound toggle; nothing here duplicates it. -->
   <div class="stage">
     <Scene client:load />
     <div class="poster" aria-hidden="true"></div>
   </div>
   <Cursor />
 
-  <!-- ACT I ─ the reveal ────────────────────────────────────────────────── -->
+  <!-- I ─ the room ──────────────────────────────────────────────────────── -->
   <section class="act act-1">
-    <p class="eyebrow">// A. M. MADANI &mdash; AI SOLUTIONS ARCHITECT</p>
-    <h1>The trick is repeatable.</h1>
-    <p class="lead">
-      A diamond is carbon that got the conditions right. So is an engineering
-      organisation that ships. I build the conditions &mdash; privacy-first AI
-      architecture for European enterprise.
-    </p>
-    <p class="links mono">
-      <a href="#proof">Evidence</a>
-      <a href="/dossier/">Dossier</a>
-      <a href="mailto:amyrmahdy1@gmail.com">Talk</a>
-    </p>
-    <p class="cue mono">
-      <span>DRAG TO TURN</span>
-      <span>MOVE TO DISTURB</span>
-      <span>SCROLL TO REVEAL</span>
-    </p>
+    <div class="copy" data-copy>
+      <p class="eyebrow">// A. M. MADANI &mdash; AI SOLUTIONS ARCHITECT</p>
+      <h1>Everyone is already seated.</h1>
+      <p class="lead">
+        Your engineers, models and data are already in the room. What they
+        lack is a shared clock &mdash; an operating model. I build that:
+        privacy-first agentic AI for European enterprise, on EU-resident
+        infrastructure.
+      </p>
+      <p class="links mono">
+        <a href="#proof">Evidence</a>
+        <a href="/dossier/">Dossier</a>
+        <a href="mailto:amyrmahdy1@gmail.com">Talk</a>
+      </p>
+      <p class="cue mono">
+        <span>MOVE TO CUE</span>
+        <span>TAP FOR A DOWNBEAT</span>
+        <span>DRAG TO LOOK</span>
+      </p>
+    </div>
   </section>
 
-  <!-- ACT II ─ the divide ───────────────────────────────────────────────── -->
+  <!-- II ─ the entries ──────────────────────────────────────────────────── -->
   <section class="act act-2" id="proof">
-    <p class="eyebrow">// DONE, NOT CLAIMED</p>
-    <ol class="beats">
-      {
-        featured.map((p) => (
-          <li>
-            <a href={`/proof/${p.id}/`}>
-              <span class="n mono">{p.data.metrics[0].value}</span>
-              <span class="l">{p.data.metrics[0].label}</span>
-              <span class="c mono">{p.data.codename ?? p.data.org}</span>
-            </a>
-          </li>
-        ))
-      }
-    </ol>
-    <p class="more mono">
-      <a href="/proof/">Nine systems, every number with its method &rarr;</a>
-    </p>
+    <div class="copy" data-copy>
+      <p class="eyebrow">// MEASURED, NOT CLAIMED</p>
+      <ol class="entries">
+        {
+          featured.map((p, k) => (
+            <li data-third={k}>
+              <a href={`/proof/${p.id}/`}>
+                <span class="n mono">{p.data.metrics[0].value}</span>
+                <span class="l">{p.data.metrics[0].label}</span>
+                <span class="c mono">{p.data.codename ?? p.data.org}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+      <p class="more mono">
+        <a href="/proof/">Nine systems, every number with its method &rarr;</a>
+      </p>
+    </div>
   </section>
 
-  <!-- ACT III ─ the vanish ──────────────────────────────────────────────── -->
+  <!-- III ─ the card ────────────────────────────────────────────────────── -->
   <section class="act act-3">
-    <WaitlistForm
-      placement="book"
-      eyebrow="// THE HARVEST FIELD CARD"
-      heading="The method on one page."
-      blurb="The loop, the scoring sheet, the quality floor. Made to be pinned to a wall."
-      button="Send the card"
-    />
+    <div class="copy" data-copy>
+      <WaitlistForm
+        placement="book"
+        eyebrow="// THE HARVEST FIELD CARD"
+        heading="The method on one page."
+        blurb="The loop, the scoring sheet, the quality floor. Made to be pinned to a wall."
+        button="Send the card"
+      />
+    </div>
   </section>
 </ShellLayout>
+
+<!-- HOVER BRIDGE: hovering an entry tells the scene which third to lift. -->
+<script>
+  const root = document.documentElement;
+  for (const li of document.querySelectorAll<HTMLElement>("li[data-third]")) {
+    li.addEventListener("pointerenter", () => {
+      root.dataset.hoverThird = li.dataset.third;
+    });
+    li.addEventListener("pointerleave", () => {
+      delete root.dataset.hoverThird;
+    });
+  }
+</script>
 
 <style>
   .stage {
@@ -91,17 +112,27 @@ const featured = (await getCollection("proof"))
     height: 100% !important;
   }
 
-  /* Holds the frame before the first paint, and permanently on the static
-     tier, so the page is never blank and never obviously missing something. */
+  /* POSTER — five faint arcs. Holds the frame until WebGL is up, and stays
+     permanently on the static tier so the page is never blank. */
   .poster {
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(30% 30% at 62% 44%, color-mix(in oklab, var(--ice) 13%, transparent), transparent 70%),
-      radial-gradient(70% 50% at 50% 105%, color-mix(in oklab, var(--ember) 6%, transparent), transparent 70%);
+      radial-gradient(40% 22% at 50% 100%, color-mix(in oklab, var(--ember) 5%, transparent), transparent 70%),
+      radial-gradient(
+        ellipse 120% 95% at 50% 112%,
+        transparent 33.6%, color-mix(in oklab, var(--ice) 8%, transparent) 34%, transparent 34.6%,
+        transparent 43.6%, color-mix(in oklab, var(--ice) 7%, transparent) 44%, transparent 44.6%,
+        transparent 53.6%, color-mix(in oklab, var(--ice) 6%, transparent) 54%, transparent 54.6%,
+        transparent 63.6%, color-mix(in oklab, var(--ice) 5%, transparent) 64%, transparent 64.6%,
+        transparent 73.6%, color-mix(in oklab, var(--ice) 4%, transparent) 74%, transparent 74.6%
+      );
     transition: opacity 1s var(--ease-mantle);
   }
   :global(html.gl-active) .poster { opacity: 0; }
+  @media (prefers-reduced-motion: reduce) {
+    .poster { opacity: 1 !important; }
+  }
 
   .act {
     position: relative;
@@ -115,8 +146,14 @@ const featured = (await getCollection("proof"))
     padding-block: clamp(4rem, 12vh, 8rem);
   }
 
-  /* Copy keeps to the left half so the stone owns the right of the frame. */
-  .act-1 > * { max-width: 32rem; }
+  /* Copy keeps to the left so the scene owns the right of the frame. A soft
+     shadow rather than a backdrop: the text sits in the room, not on a card. */
+  .copy {
+    max-width: 32rem;
+    text-shadow: 0 1px 24px color-mix(in oklab, var(--bg) 80%, transparent);
+  }
+  .act-2 .copy { max-width: 36rem; }
+  .act-3 { max-width: var(--w-text); }
 
   h1 {
     font-size: var(--t-monument);
@@ -138,6 +175,9 @@ const featured = (await getCollection("proof"))
   }
   .links a:hover { border-color: var(--accent); }
 
+  /* CUES — only ever shown once the scene has handed over (html.baton-live).
+     They name controls that exist only with the scene, so no other rule may
+     reveal them: not reduced-motion, not the static tier. */
   .cue {
     display: flex;
     flex-wrap: wrap;
@@ -151,12 +191,13 @@ const featured = (await getCollection("proof"))
     position: relative;
     padding-left: 1.1rem;
     opacity: 0;
+  }
+  :global(html.baton-live) .cue span {
     animation: cue-in 700ms var(--ease-facet) forwards;
   }
-  /* Staggered so they read as instructions arriving, not as a legend. */
-  .cue span:nth-child(1) { animation-delay: 1.6s; }
-  .cue span:nth-child(2) { animation-delay: 1.9s; }
-  .cue span:nth-child(3) { animation-delay: 2.2s; }
+  :global(html.baton-live) .cue span:nth-child(1) { animation-delay: 0s; }
+  :global(html.baton-live) .cue span:nth-child(2) { animation-delay: 0.3s; }
+  :global(html.baton-live) .cue span:nth-child(3) { animation-delay: 0.6s; }
   .cue span::before {
     content: "";
     position: absolute;
@@ -171,69 +212,105 @@ const featured = (await getCollection("proof"))
     from { opacity: 0; transform: translateY(6px); }
     to   { opacity: 0.75; transform: none; }
   }
-  @media (prefers-reduced-motion: reduce) {
-    .cue span { animation: none; opacity: 0.75; }
-  }
 
-  /* ── act II ─────────────────────────────────────────────────────────── */
-  .beats {
+  /* ENTRIES — rules, not cards. No backdrop, no borders except the lines. */
+  .entries {
     list-style: none;
     margin: 1.5rem 0 0;
     padding: 0;
+  }
+  .entries li { border-top: 1px solid var(--line); }
+  .entries li:last-child { border-bottom: 1px solid var(--line); }
+  .entries a {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-    gap: 1px;
-    background: var(--line);
-    border: 1px solid var(--line);
-    /* Sits over the canvas, so it needs its own ground. */
-    backdrop-filter: blur(10px);
+    grid-template-columns: minmax(6ch, auto) 1fr;
+    column-gap: 1.5rem;
+    align-items: baseline;
+    padding: 1.4rem 0;
+    opacity: 0.42;
+    transition:
+      opacity var(--dur-snap) var(--ease-facet),
+      color var(--dur-token) var(--ease-mantle);
   }
-  .beats a {
-    display: block;
-    background: color-mix(in oklab, var(--bg) 78%, transparent);
-    padding: 1.9rem 1.4rem;
-    height: 100%;
-    transition: background-color var(--dur-quick) var(--ease-facet);
-  }
-  .beats a:hover { background: var(--surface); color: inherit; }
-
   .n {
-    display: block;
     font-size: var(--t-h2);
     font-weight: 500;
-    color: var(--accent);
     line-height: 1;
+    color: var(--accent);
+    transition: color var(--dur-token) var(--ease-mantle);
   }
-  .l {
-    display: block;
-    margin-top: 0.65rem;
-    font-size: var(--t-small);
-    line-height: 1.4;
-  }
+  .l { font-size: var(--t-small); }
   .c {
-    display: block;
-    margin-top: 0.9rem;
+    grid-column: 2;
     font-size: var(--t-micro);
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--muted);
   }
 
+  /* LIT by scroll state: entry k is lit once data-cue > k. */
+  :global(html[data-cue="1"]) li[data-third="0"] a,
+  :global(html[data-cue="2"]) li[data-third="0"] a,
+  :global(html[data-cue="2"]) li[data-third="1"] a,
+  :global(html[data-cue="3"]) li a {
+    opacity: 1;
+  }
+
+  /* EMBER only on the current one. */
+  :global(html[data-cue="1"]) li[data-third="0"] .n,
+  :global(html[data-cue="2"]) li[data-third="1"] .n,
+  :global(html[data-cue="3"]:not(.cutoff)) li[data-third="2"] .n {
+    color: var(--ember);
+  }
+
+  .entries a:hover { opacity: 1; }
+
+  /* STATIC TIER — no scene, so nothing to wait for. */
+  :global(html:not(.gl-active)) .entries a { opacity: 1; }
+
   .more { margin-top: 1.25rem; font-size: var(--t-micro); letter-spacing: 0.08em; }
   .more a { color: var(--muted); }
   .more a:hover { color: var(--accent); }
 
-  /* ── act III ────────────────────────────────────────────────────────── */
-  .act-3 { max-width: var(--w-text); }
+  /* SOUND TOGGLE — rendered by the React scene, styled here. */
+  :global(.sound) {
+    position: fixed;
+    top: var(--gutter);
+    right: var(--gutter);
+    z-index: 5;
+    pointer-events: auto;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid color-mix(in oklab, var(--accent) 32%, transparent);
+    padding: 0 0 0.3rem;
+    color: var(--muted);
+    font-size: var(--t-micro);
+    letter-spacing: 0.22em;
+    cursor: pointer;
+  }
+  :global(.sound[aria-pressed="true"]) {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* CURSOR HANDOFF — Cursor.astro is frozen; reach its DOM by attribute.
+     After handoff the ring collapses to a dot, except over links or while
+     dragging. */
+  :global(html.baton-live:not(.cursor-link):not(.is-dragging) [data-cursor] > span:first-child) {
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-color: transparent;
+  }
+  :global(html.baton-live:not(.cursor-link) [data-cursor] > span:last-child) {
+    width: 0;
+    height: 0;
+  }
 
   @media (max-width: 900px) {
     .act-1 { align-content: end; }
-    .act-1 > * { max-width: none; }
+    .copy { max-width: none; }
     .lead { max-width: 40ch; }
     .cue { margin-top: 2.5rem; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .poster { opacity: 1 !important; }
   }
 </style>
