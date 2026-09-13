@@ -6,7 +6,7 @@ Email: amyrmahdy1@gmail.com | Global Availability | [github.com/amyrmahdy](http:
 
 **SUMMARY**
 
-A problem solver first, and an AI Solutions Architect second. Driven by the philosophy that businesses do not buy AI models—they buy efficiency, cost reduction, and operational transformation. An experienced CTO, Forward Deployed Engineer, and AI Solutions Consultant who audits broken corporate processes and completely rewires them using advanced, customized, and privacy-first AI agentic architectures. Beyond building systems, I build and lead the teams that build them—framing missions, setting standards, and orchestrating cross-functional pods to deliver 10x output in hypersonic-speed environments. I designed **The Harvest Methodology**, an AI-native operating model that turns fast execution into compounding, reusable organizational advantage.
+A problem solver first, and an AI Solutions Architect second. Driven by the philosophy that businesses do not buy AI models—they buy efficiency, cost reduction, and operational transformation. An experienced CAIO, Forward Deployed Engineer, and AI Solutions Consultant who audits broken corporate processes and completely rewires them using advanced, customized, and privacy-first AI agentic architectures. Beyond building systems, I build and lead the teams that build them—framing missions, setting standards, and orchestrating cross-functional pods to deliver 10x output in hypersonic-speed environments. I designed **The Harvest Methodology**, an AI-native operating model that turns fast execution into compounding, reusable organizational advantage.
 
 **SIGNATURE FRAMEWORK — THE HARVEST METHODOLOGY**
 
@@ -30,7 +30,7 @@ An original operating model for AI-native organizations, built on the conviction
 
 **WORK EXPERIENCE**
 
-**Chief Technology Officer (CTO) & AI Consultant | Smartway Solutions**	*Germany (2025 \- Present)*
+**Chief AI Officer (CAIO) & AI Consultant | Smartway Solutions**	*Germany (2025 \- Present)*
 
 **• Team Framing & 10x Output:** Built and framed high-velocity engineering pods under The Harvest Methodology, embedding clear ownership, naming discipline, and rapid feedback loops that drove 10x output in a hypersonic-speed delivery environment.
 

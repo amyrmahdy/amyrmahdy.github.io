@@ -12,7 +12,7 @@ export interface Post {
 export const CAREER: Post[] = [
   {
     period: "2025–present",
-    role: "Chief Technology Officer & AI Consultant",
+    role: "Chief AI Officer (CAIO) & AI Consultant",
     org: "Smartway Solutions",
     place: "Germany",
     chapter: 6,
